@@ -1,0 +1,53 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.custom-table {
+  border-radius: 10px;
+  box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+}
+
+.custom-table th {
+  background: #36304A;
+  color: white;
+}
+
+.custom-table th:first-child {
+  border-top-left-radius: 5px;
+}
+.custom-table th:last-child {
+  border-top-right-radius: 5px;
+}
+
+.custom-table th, .custom-table td {
+  padding: 5px 10px;
+}
+.custom-table tr:nth-child(even) {background-color: #F5F5F5;}
+
+.ant-input-number-handler-wrap {
+  display: none !important;
+}
+
+.print-only {
+  display: none;
+}
+
+.print-only-self {
+  display: none;
+}
+
+@media print {
+  .print-only {
+    display: block;
+  }
+  .print-only-self {
+    display: block;
+  }
+  .page-break {
+    page-break-after: always;
+  }
+}
+.custom-table-print td, .custom-table-print th{
+  border: 1px solid black;
+  padding: 5px 10px;
+}
