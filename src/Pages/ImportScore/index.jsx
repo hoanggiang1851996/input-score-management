@@ -1,7 +1,7 @@
-import {useState, useRef} from 'react'
+import {useRef, useState} from 'react'
 import * as XLSX from 'xlsx-js-style';
 import {Button, Checkbox, Input, InputNumber, message, Select} from "antd";
-import {EditOutlined, SaveOutlined, PrinterOutlined, FileExcelOutlined} from "@ant-design/icons";
+import {EditOutlined, FileExcelOutlined, PrinterOutlined, SaveOutlined} from "@ant-design/icons";
 import {initData} from "./fakeData.jsx";
 import {useReactToPrint} from "react-to-print";
 import {GeneralPrint} from "./generalPrint.jsx";
@@ -52,6 +52,27 @@ export const ImportScore = () => {
     const wb = XLSX.utils.book_new();
     const ws = XLSX.utils.aoa_to_sheet([]);
 
+    const dataWidth = data[0].students[0].scores.length; // Number of smaller score columns
+
+    const cols = [
+      { wch: 5 },  // STT column
+      { wch: 5 },  // STT column
+      { wch: 20 }, // Họ và Tên column
+    ];
+
+    // Add "Điểm tổng kết môn học" column multiple times
+    for (let i = 0; i < dataWidth; i++) {
+      cols.push({ wch: 5 });
+    }
+
+    // Add remaining columns
+    cols.push(
+      { wch: 5 },  // TB column
+      { wch: 20 }, // Ghi chú column
+      // Add more widths for additional columns as needed
+    );
+
+    ws['!cols'] = cols;
     const cellRef = position;
     const range = XLSX.utils.decode_range(cellRef);
     let startRow = range.s.r;
@@ -75,7 +96,18 @@ export const ImportScore = () => {
       '',
     ];
 
-    XLSX.utils.sheet_add_aoa(ws, [headerRow1, scoreNamesRow], { origin: { r: startRow, c: range.s.c } });
+    const creditsNamesRow = [
+      '',
+      '',
+      ...data[0].students[0].scores.map((score) => ({
+        v: score.name,
+        s: { font: { bold: true }, alignment: { horizontal: 'center', vertical: 'center' } }
+      })),
+      '',
+      '',
+    ];
+
+    XLSX.utils.sheet_add_aoa(ws, [headerRow1, scoreNamesRow, creditsNamesRow], { origin: { r: startRow, c: range.s.c } });
 
     const sttMerge = { s: { r: range.s.r, c: range.s.c }, e: { r: range.s.r + 1, c: range.s.c } };
     if (!ws['!merges']) ws['!merges'] = [];
@@ -115,7 +147,7 @@ export const ImportScore = () => {
       })})/${student.scores.length}`;
 
       const note = 'Example note'; // You can replace this with actual notes if available
-      const row = [...studentInfo, ...scores, { f: averageFormula, s: { alignment: { horizontal: 'center' } } }, { v: note, s: { alignment: { horizontal: 'center' } } }];
+      const row = [...studentInfo, ...scores, { f: averageFormula, s: { alignment: { horizontal: 'center' }, font: { bold: true } } }, { v: note, s: { alignment: { horizontal: 'center' } } }];
       XLSX.utils.sheet_add_aoa(ws, [row], { origin: { r: startRow, c: range.s.c } });
       startRow++;
     });
