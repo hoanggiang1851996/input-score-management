@@ -1,4 +1,5 @@
 import { useState, useRef } from 'react'
+import * as XLSX from 'xlsx';
 import {Button, Checkbox, Input, InputNumber, message, Select} from "antd";
 import {EditOutlined, SaveOutlined, PrinterOutlined, FileExcelOutlined} from "@ant-design/icons";
 import {initData} from "./fakeData.jsx";
@@ -47,7 +48,7 @@ export const ImportScore = () => {
     console.log(convertedDataSend, 'data send')
   };
 
-  const handleExport = () => {
+  const handleExport = (fileName, position) => {
     const wb = XLSX.utils.book_new()
 		const ws = XLSX.utils.aoa_to_sheet([])
 
@@ -62,10 +63,10 @@ export const ImportScore = () => {
 
 		// Thêm header cho dòng 1
 		const headerRow1 = [
-			{ v: 'Student ID', s: { font: { bold: true } } },
-			{ v: 'Name', s: { font: { bold: true } } },
+			{ v: 'STT', s: { font: { bold: true } } },
+			{ v: 'Họ và Tên', s: { font: { bold: true } } },
 			{
-				v: 'Score',
+				v: 'Điểm',
 				s: {
 					font: { bold: true },
 					alignment: { horizontal: 'center' },
@@ -73,7 +74,7 @@ export const ImportScore = () => {
 				}
 			},
 			'', // Thêm một ô trống để cách cột "Score" và "Average"
-			{ v: 'Average', s: { font: { bold: true } } } // Thêm header "Average"
+			{ v: 'TB', s: { font: { bold: true } } } // Thêm header "Average"
 		]
 
 		// Tạo một mảng chứa các tên điểm
@@ -89,6 +90,22 @@ export const ImportScore = () => {
 			origin: { r: startRow, c: range.s.c }
 		})
 
+    // Merge ô STT
+    const sttMerge = {
+      s: { r: range.s.r, c: range.s.c },
+      e: { r: range.s.r + 1, c: range.s.c }
+    };
+    if (!ws['!merges']) ws['!merges'] = [];
+    ws['!merges'].push(sttMerge);
+
+    // Merge ô Name
+    const nameMerge = {
+      s: { r: range.s.r, c: range.s.c + 1 },
+      e: { r: range.s.r + 1, c: range.s.c + 1 }
+    };
+    if (!ws['!merges']) ws['!merges'] = [];
+    ws['!merges'].push(nameMerge);
+
 		// Merge ô Score
 		const scoreMergeEnd = range.s.c + data[0].students[0].scores.length - 1
 		const merge = {
@@ -102,9 +119,10 @@ export const ImportScore = () => {
 		startRow += 2
 
 		// Thêm dữ liệu sinh viên và tính trung bình
-		data[0].students.forEach((student) => {
-			const studentInfo = [student.studentId, student.name]
+		data[0].students.forEach((student, index) => {
+			const studentInfo = [index + 1, student.name]
 			const scores = []
+      // eslint-disable-next-line no-unused-vars
 			let totalScore = 0 // Tính tổng điểm để tính trung bình
 			student.scores.forEach((score) => {
 				scores.push(score.score)
@@ -166,7 +184,7 @@ export const ImportScore = () => {
         }
         handlePrintIndividual();
       }}>In cá nhân</Button>
-      <Button type="primary" icon={<FileExcelOutlined />} onClick={() => handleExport(data, 'student_scores.xlsx', 'B2')}>Xuất excel</Button>
+      <Button type="primary" icon={<FileExcelOutlined />} onClick={() => handleExport('student_scores.xlsx', 'B2')}>Xuất excel</Button>
       <table className="mt-3 custom-table text-center">
         <thead>
         <th>
