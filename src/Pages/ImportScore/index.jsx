@@ -49,116 +49,132 @@ export const ImportScore = () => {
   };
 
   const handleExport = (fileName, position) => {
-    const wb = XLSX.utils.book_new()
-		const ws = XLSX.utils.aoa_to_sheet([])
+    const wb = XLSX.utils.book_new();
+    const ws = XLSX.utils.aoa_to_sheet([]);
 
-		// Định vị ô cần thêm dữ liệu
-		const cellRef = position // Ví dụ: 'B2'
+    // Define the position for the header
+    const cellRef = position; // e.g., 'B2'
+    const range = XLSX.utils.decode_range(cellRef);
+    let startRow = range.s.r;
 
-		// Lấy hàng và cột từ cellRef
-		const range = XLSX.utils.decode_range(cellRef)
+    // Add the first header row
+    const headerRow1 = [
+      { v: 'STT', s: { font: { bold: true } } },
+      { v: 'Họ và Tên', s: { font: { bold: true } } },
+      {
+        v: 'Điểm tổng kết môn học',
+        s: {
+          font: { bold: true },
+          alignment: { horizontal: 'center', vertical: 'center' },
+          colspan: data[0].students[0].scores.length,
+        },
+      },
+      { v: 'TB', s: { font: { bold: true } } },
+      { v: 'Ghi chú', s: { font: { bold: true } } },
+    ];
 
-		// Tính toán vị trí bắt đầu thêm dữ liệu
-		let startRow = range.s.r
+    // Create an array of score names
+    const scoreNamesRow = [
+      '',
+      '',
+      ...data[0].students[0].scores.map((score) => score.name),
+      '',
+      '',
+    ];
 
-		// Thêm header cho dòng 1
-		const headerRow1 = [
-			{ v: 'STT', s: { font: { bold: true } } },
-			{ v: 'Họ và Tên', s: { font: { bold: true } } },
-			{
-				v: 'Điểm',
-				s: {
-					font: { bold: true },
-					alignment: { horizontal: 'center' },
-					colspan: data[0].students[0].scores.length
-				}
-			},
-			'', // Thêm một ô trống để cách cột "Score" và "Average"
-			{ v: 'TB', s: { font: { bold: true } } } // Thêm header "Average"
-		]
+    // Add the header rows to the sheet
+    XLSX.utils.sheet_add_aoa(ws, [headerRow1, scoreNamesRow], {
+      origin: { r: startRow, c: range.s.c },
+    });
 
-		// Tạo một mảng chứa các tên điểm
-		const scoreNamesRow = [
-			'',
-			'',
-			...data[0].students[0].scores.map((score) => score.name),
-			''
-		]
-
-		// Thêm dòng score names vào sau headerRow1
-		XLSX.utils.sheet_add_aoa(ws, [headerRow1, scoreNamesRow], {
-			origin: { r: startRow, c: range.s.c }
-		})
-
-    // Merge ô STT
+    // Merge cells for "STT"
     const sttMerge = {
       s: { r: range.s.r, c: range.s.c },
-      e: { r: range.s.r + 1, c: range.s.c }
+      e: { r: range.s.r + 1, c: range.s.c },
     };
     if (!ws['!merges']) ws['!merges'] = [];
     ws['!merges'].push(sttMerge);
 
-    // Merge ô Name
+    // Merge cells for "Họ và Tên"
     const nameMerge = {
       s: { r: range.s.r, c: range.s.c + 1 },
-      e: { r: range.s.r + 1, c: range.s.c + 1 }
+      e: { r: range.s.r + 1, c: range.s.c + 1 },
     };
-    if (!ws['!merges']) ws['!merges'] = [];
     ws['!merges'].push(nameMerge);
 
-		// Merge ô Score
-		const scoreMergeEnd = range.s.c + data[0].students[0].scores.length - 1
-		const merge = {
-			s: { r: startRow, c: range.s.c + 2 },
-			e: { r: startRow, c: scoreMergeEnd + 2 }
-		}
-		if (!ws['!merges']) ws['!merges'] = []
-		ws['!merges'].push(merge)
+    // Merge cells for "Điểm tổng kết môn học"
+    const scoreMergeEnd = range.s.c + data[0].students[0].scores.length - 1;
+    const scoreMerge = {
+      s: { r: startRow, c: range.s.c + 2 },
+      e: { r: startRow, c: scoreMergeEnd + 2 },
+    };
+    ws['!merges'].push(scoreMerge);
 
-		// Bắt đầu từ dòng tiếp theo sau dòng score names
-		startRow += 2
+    // Merge cells for "TB"
+    const tbMerge = {
+      s: { r: range.s.r, c: scoreMergeEnd + 3 },
+      e: { r: range.s.r + 1, c: scoreMergeEnd + 3 },
+    };
+    ws['!merges'].push(tbMerge);
 
-		// Thêm dữ liệu sinh viên và tính trung bình
-		data[0].students.forEach((student, index) => {
-			const studentInfo = [index + 1, student.name]
-			const scores = []
-      // eslint-disable-next-line no-unused-vars
-			let totalScore = 0 // Tính tổng điểm để tính trung bình
-			student.scores.forEach((score) => {
-				scores.push(score.score)
-				totalScore += score.score
-			})
-			const averageFormula = `SUM(${XLSX.utils.encode_cell({
-				r: startRow,
-				c: range.s.c + 2
-			})}:${XLSX.utils.encode_cell({
-				r: startRow,
-				c: range.s.c + 1 + student.scores.length
-			})})/${student.scores.length}` // Tạo công thức SUM tương ứng
-			const row = [...studentInfo, ...scores, { f: averageFormula }] // Thêm công thức trung bình vào dòng dữ liệu
-			XLSX.utils.sheet_add_aoa(ws, [row], {
-				origin: { r: startRow, c: range.s.c }
-			})
-			startRow++
-		})
+    // Merge cells for "Ghi chú"
+    const noteMerge = {
+      s: { r: range.s.r, c: scoreMergeEnd + 4 },
+      e: { r: range.s.r + 1, c: scoreMergeEnd + 4 },
+    };
+    ws['!merges'].push(noteMerge);
 
-		// Ghi sheet vào workbook
-		XLSX.utils.book_append_sheet(wb, ws, 'Sheet1')
+    // Start adding student data from the next row
+    startRow += 2;
 
-		// Xuất file Excel
-		const excelBuffer = XLSX.write(wb, { type: 'array', bookType: 'xlsx' })
-		const blob = new Blob([excelBuffer], {
-			type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
-		})
-		const url = window.URL.createObjectURL(blob)
-		const link = document.createElement('a')
-		link.href = url
-		link.setAttribute('download', fileName)
-		document.body.appendChild(link)
-		link.click()
-		console.log(link)
-		document.body.removeChild(link)
-  }
+    // Add student data and calculate the average score
+    data[0].students.forEach((student, index) => {
+      const studentInfo = [index + 1, student.name];
+      const scores = [];
+      let totalScore = 0;
+
+      student.scores.forEach((score) => {
+        scores.push(score.score);
+        totalScore += score.score;
+      });
+
+      const averageFormula = `SUM(${XLSX.utils.encode_cell({
+        r: startRow,
+        c: range.s.c + 2,
+      })}:${XLSX.utils.encode_cell({
+        r: startRow,
+        c: range.s.c + 1 + student.scores.length,
+      })})/${student.scores.length}`;
+
+      const row = [...studentInfo, ...scores, { f: averageFormula }, ''];
+      XLSX.utils.sheet_add_aoa(ws, [row], {
+        origin: { r: startRow, c: range.s.c },
+      });
+      startRow++;
+    });
+
+    // Place the content in the first cell of the merged range
+    ws[XLSX.utils.encode_cell({ r: range.s.r, c: scoreMergeEnd + 3 })] = { v: 'TB', s: { font: { bold: true } } };
+    ws[XLSX.utils.encode_cell({ r: range.s.r, c: scoreMergeEnd + 4 })] = { v: 'Ghi chú', s: { font: { bold: true } } };
+
+    // Append the worksheet to the workbook
+    XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
+
+    // Export the Excel file
+    const excelBuffer = XLSX.write(wb, { type: 'array', bookType: 'xlsx' });
+    const blob = new Blob([excelBuffer], {
+      type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    });
+    const url = window.URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', fileName);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+
   return (
     <div>
       <Select className="w-[200px] mr-3" placeholder="Chọn lớp">
