@@ -56,7 +56,6 @@ export const ImportScore = () => {
 
     const cols = [
       { wch: 5 },  // STT column
-      { wch: 5 },  // STT column
       { wch: 20 }, // Họ và Tên column
     ];
 
@@ -184,7 +183,7 @@ export const ImportScore = () => {
         }
         handlePrintIndividual();
       }}>In cá nhân</Button>
-      <Button type="primary" icon={<FileExcelOutlined/>} onClick={() => handleExport('student_scores.xlsx', 'B2')}>Xuất
+      <Button type="primary" icon={<FileExcelOutlined/>} onClick={() => handleExport('student_scores.xlsx', 'A4')}>Xuất
         excel</Button>
       <table className="mt-3 custom-table text-center">
         <thead>
