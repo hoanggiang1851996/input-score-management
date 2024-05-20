@@ -1,5 +1,5 @@
-import { useState, useRef } from 'react'
-import * as XLSX from 'xlsx';
+import {useState, useRef} from 'react'
+import * as XLSX from 'xlsx-js-style';
 import {Button, Checkbox, Input, InputNumber, message, Select} from "antd";
 import {EditOutlined, SaveOutlined, PrinterOutlined, FileExcelOutlined} from "@ant-design/icons";
 import {initData} from "./fakeData.jsx";
@@ -20,8 +20,8 @@ export const ImportScore = () => {
   });
 
   const handlePrintIndividual = useReactToPrint({
-      content: () => componentIndividualRef.current,
-    });
+    content: () => componentIndividualRef.current,
+  });
 
   const convertDataSend = (raw) => {
     return raw.map(classData => ({
@@ -52,82 +52,50 @@ export const ImportScore = () => {
     const wb = XLSX.utils.book_new();
     const ws = XLSX.utils.aoa_to_sheet([]);
 
-    // Define the position for the header
-    const cellRef = position; // e.g., 'B2'
+    const cellRef = position;
     const range = XLSX.utils.decode_range(cellRef);
     let startRow = range.s.r;
 
-    // Add the first header row
     const headerRow1 = [
-      { v: 'STT', s: { font: { bold: true } } },
-      { v: 'Họ và Tên', s: { font: { bold: true } } },
-      {
-        v: 'Điểm tổng kết môn học',
-        s: {
-          font: { bold: true },
-          alignment: { horizontal: 'center', vertical: 'center' },
-          colspan: data[0].students[0].scores.length,
-        },
-      },
-      { v: 'TB', s: { font: { bold: true } } },
-      { v: 'Ghi chú', s: { font: { bold: true } } },
+      { v: 'STT', s: { font: { bold: true }, alignment: { horizontal: 'center', vertical: 'center' } } },
+      { v: 'Họ và Tên', s: { font: { bold: true }, alignment: { horizontal: 'center', vertical: 'center' } } },
+      { v: 'Điểm tổng kết môn học', s: { font: { bold: true }, alignment: { horizontal: 'center', vertical: 'center' } } },
+      { v: 'TB', s: { font: { bold: true }, alignment: { horizontal: 'center', vertical: 'center' } } },
+      { v: 'Ghi chú', s: { font: { bold: true }, alignment: { horizontal: 'center', vertical: 'center' } } }
     ];
 
-    // Create an array of score names
     const scoreNamesRow = [
       '',
       '',
-      ...data[0].students[0].scores.map((score) => score.name),
+      ...data[0].students[0].scores.map((score) => ({
+        v: score.name,
+        s: { font: { bold: true }, alignment: { horizontal: 'center', vertical: 'center' } }
+      })),
       '',
       '',
     ];
 
-    // Add the header rows to the sheet
-    XLSX.utils.sheet_add_aoa(ws, [headerRow1, scoreNamesRow], {
-      origin: { r: startRow, c: range.s.c },
-    });
+    XLSX.utils.sheet_add_aoa(ws, [headerRow1, scoreNamesRow], { origin: { r: startRow, c: range.s.c } });
 
-    // Merge cells for "STT"
-    const sttMerge = {
-      s: { r: range.s.r, c: range.s.c },
-      e: { r: range.s.r + 1, c: range.s.c },
-    };
+    const sttMerge = { s: { r: range.s.r, c: range.s.c }, e: { r: range.s.r + 1, c: range.s.c } };
     if (!ws['!merges']) ws['!merges'] = [];
     ws['!merges'].push(sttMerge);
 
-    // Merge cells for "Họ và Tên"
-    const nameMerge = {
-      s: { r: range.s.r, c: range.s.c + 1 },
-      e: { r: range.s.r + 1, c: range.s.c + 1 },
-    };
+    const nameMerge = { s: { r: range.s.r, c: range.s.c + 1 }, e: { r: range.s.r + 1, c: range.s.c + 1 } };
     ws['!merges'].push(nameMerge);
 
-    // Merge cells for "Điểm tổng kết môn học"
     const scoreMergeEnd = range.s.c + data[0].students[0].scores.length - 1;
-    const scoreMerge = {
-      s: { r: startRow, c: range.s.c + 2 },
-      e: { r: startRow, c: scoreMergeEnd + 2 },
-    };
+    const scoreMerge = { s: { r: startRow, c: range.s.c + 2 }, e: { r: startRow, c: scoreMergeEnd + 2 } };
     ws['!merges'].push(scoreMerge);
 
-    // Merge cells for "TB"
-    const tbMerge = {
-      s: { r: range.s.r, c: scoreMergeEnd + 3 },
-      e: { r: range.s.r + 1, c: scoreMergeEnd + 3 },
-    };
+    const tbMerge = { s: { r: range.s.r, c: scoreMergeEnd + 3 }, e: { r: range.s.r + 1, c: scoreMergeEnd + 3 } };
     ws['!merges'].push(tbMerge);
 
-    // Merge cells for "Ghi chú"
-    const noteMerge = {
-      s: { r: range.s.r, c: scoreMergeEnd + 4 },
-      e: { r: range.s.r + 1, c: scoreMergeEnd + 4 },
-    };
+    const noteMerge = { s: { r: range.s.r, c: scoreMergeEnd + 4 }, e: { r: range.s.r + 1, c: scoreMergeEnd + 4 } };
     ws['!merges'].push(noteMerge);
 
-    // Start adding student data from the next row
     startRow += 2;
 
-    // Add student data and calculate the average score
     data[0].students.forEach((student, index) => {
       const studentInfo = [index + 1, student.name];
       const scores = [];
@@ -146,25 +114,19 @@ export const ImportScore = () => {
         c: range.s.c + 1 + student.scores.length,
       })})/${student.scores.length}`;
 
-      const row = [...studentInfo, ...scores, { f: averageFormula }, ''];
-      XLSX.utils.sheet_add_aoa(ws, [row], {
-        origin: { r: startRow, c: range.s.c },
-      });
+      const note = 'Example note'; // You can replace this with actual notes if available
+      const row = [...studentInfo, ...scores, { f: averageFormula, s: { alignment: { horizontal: 'center' } } }, { v: note, s: { alignment: { horizontal: 'center' } } }];
+      XLSX.utils.sheet_add_aoa(ws, [row], { origin: { r: startRow, c: range.s.c } });
       startRow++;
     });
 
-    // Place the content in the first cell of the merged range
-    ws[XLSX.utils.encode_cell({ r: range.s.r, c: scoreMergeEnd + 3 })] = { v: 'TB', s: { font: { bold: true } } };
-    ws[XLSX.utils.encode_cell({ r: range.s.r, c: scoreMergeEnd + 4 })] = { v: 'Ghi chú', s: { font: { bold: true } } };
+    ws[XLSX.utils.encode_cell({ r: range.s.r, c: scoreMergeEnd + 3 })] = { v: 'TB', s: { font: { bold: true }, alignment: { horizontal: 'center' } } };
+    ws[XLSX.utils.encode_cell({ r: range.s.r, c: scoreMergeEnd + 4 })] = { v: 'Ghi chú', s: { font: { bold: true }, alignment: { horizontal: 'center' } } };
 
-    // Append the worksheet to the workbook
     XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
 
-    // Export the Excel file
     const excelBuffer = XLSX.write(wb, { type: 'array', bookType: 'xlsx' });
-    const blob = new Blob([excelBuffer], {
-      type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-    });
+    const blob = new Blob([excelBuffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
     const url = window.URL.createObjectURL(blob);
     const link = document.createElement('a');
     link.href = url;
@@ -173,6 +135,7 @@ export const ImportScore = () => {
     link.click();
     document.body.removeChild(link);
   };
+
 
 
   return (
@@ -187,20 +150,21 @@ export const ImportScore = () => {
       </Select>
       <span className="mr-3">
         {!isEdit ? (
-          <Button type="primary" icon={<EditOutlined />} onClick={() => setIsEdit(true)}>Chỉnh sửa</Button>
+          <Button type="primary" icon={<EditOutlined/>} onClick={() => setIsEdit(true)}>Chỉnh sửa</Button>
         ) : (
-          <Button type="primary" loading={loading} icon={<SaveOutlined />} onClick={saveTable}>Lưu</Button>
+          <Button type="primary" loading={loading} icon={<SaveOutlined/>} onClick={saveTable}>Lưu</Button>
         )}
       </span>
-      <Button type="primary" className="mr-3" icon={<PrinterOutlined />} onClick={handlePrint}>In tổng hợp</Button>
-      <Button type="primary" className="mr-3" icon={<PrinterOutlined />} onClick={() => {
+      <Button type="primary" className="mr-3" icon={<PrinterOutlined/>} onClick={handlePrint}>In tổng hợp</Button>
+      <Button type="primary" className="mr-3" icon={<PrinterOutlined/>} onClick={() => {
         if (checked.length === 0) {
           message.warning("Vui lòng chọn học sinh để in.");
           return;
         }
         handlePrintIndividual();
       }}>In cá nhân</Button>
-      <Button type="primary" icon={<FileExcelOutlined />} onClick={() => handleExport('student_scores.xlsx', 'B2')}>Xuất excel</Button>
+      <Button type="primary" icon={<FileExcelOutlined/>} onClick={() => handleExport('student_scores.xlsx', 'B2')}>Xuất
+        excel</Button>
       <table className="mt-3 custom-table text-center">
         <thead>
         <th>
@@ -210,7 +174,7 @@ export const ImportScore = () => {
             } else {
               setChecked([]);
             }
-          }} />
+          }}/>
         </th>
         <th>STT</th>
         <th>Họ và tên</th>
@@ -225,7 +189,7 @@ export const ImportScore = () => {
           {data[0].students[0].scores.map((item) => {
             return (
               <>
-                <td key={item.id} style={{ textAlign: 'center' }}>
+                <td key={item.id} style={{textAlign: 'center'}}>
                   {item.name}
                 </td>
               </>
@@ -242,7 +206,7 @@ export const ImportScore = () => {
           <td></td>
           {data[0].students[0].scores.map((item) => {
             return (
-              <td key={item.id} style={{ textAlign: 'center' }}>
+              <td key={item.id} style={{textAlign: 'center'}}>
                 {item.scoreId}
               </td>
             )
@@ -262,7 +226,7 @@ export const ImportScore = () => {
                     console.log(newChecked)
                     setChecked(newChecked.filter((item) => item !== index));
                   }
-                }} />
+                }}/>
               </td>
               <td>{index + 1}</td>
               <td>{item.name}</td>
@@ -291,7 +255,7 @@ export const ImportScore = () => {
               </td>
               <td>
                 {isEdit ? (
-                  <Input />
+                  <Input/>
                 ) : <span>Note</span>}
               </td>
             </tr>
@@ -300,8 +264,8 @@ export const ImportScore = () => {
         </tbody>
       </table>
 
-      <GeneralPrint ref={componentRef} data={data} />
-      <IndividualPrint ref={componentIndividualRef} data={checked.map((item) => data[0].students[item])} />
+      <GeneralPrint ref={componentRef} data={data}/>
+      <IndividualPrint ref={componentIndividualRef} data={checked.map((item) => data[0].students[item])}/>
     </div>
   )
 }
