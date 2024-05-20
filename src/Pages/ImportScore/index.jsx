@@ -96,18 +96,7 @@ export const ImportScore = () => {
       '',
     ];
 
-    const creditsNamesRow = [
-      '',
-      '',
-      ...data[0].students[0].scores.map((score) => ({
-        v: score.name,
-        s: { font: { bold: true }, alignment: { horizontal: 'center', vertical: 'center' } }
-      })),
-      '',
-      '',
-    ];
-
-    XLSX.utils.sheet_add_aoa(ws, [headerRow1, scoreNamesRow, creditsNamesRow], { origin: { r: startRow, c: range.s.c } });
+    XLSX.utils.sheet_add_aoa(ws, [headerRow1, scoreNamesRow], { origin: { r: startRow, c: range.s.c } });
 
     const sttMerge = { s: { r: range.s.r, c: range.s.c }, e: { r: range.s.r + 1, c: range.s.c } };
     if (!ws['!merges']) ws['!merges'] = [];
