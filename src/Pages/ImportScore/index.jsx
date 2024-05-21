@@ -949,8 +949,10 @@ export const ImportScore = () => {
         }
         handlePrintIndividual();
       }}>In cá nhân</Button>
-      <Button type="primary" icon={<FileExcelOutlined/>} onClick={() => handleExport('student_scores.xlsx', 'A4')}>Xuất
+      <Button className="mr-3" type="primary" icon={<FileExcelOutlined/>} onClick={() => handleExport('student_scores.xlsx', 'A4')}>Xuất
         excel</Button>
+	<Button className="mr-3" type="primary" icon={<FileExcelOutlined/>} onClick={() => exportExcelIndividual('student_scores.xlsx')}>Xuất
+        excel cá nhân</Button>
       <table className="mt-3 custom-table text-center">
         <thead>
         <th>
