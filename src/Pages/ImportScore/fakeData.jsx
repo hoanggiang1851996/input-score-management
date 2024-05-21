@@ -9,27 +9,32 @@ export const initData = [
           {
             scoreId: 1,
             name: 'Văn',
-            score: 10
+            score: 10,
+            credit: 3
           },
           {
             scoreId: 2,
             name: 'Toán',
-            score: 8
+            score: 8,
+            credit: 2
           },
           {
             scoreId: 3,
             name: 'Anh',
-            score: 9
+            score: 9,
+            credit: 1
           },
           {
             scoreId: 4,
             name: 'Lý',
-            score: 7
+            score: 7,
+            credit: 4
           },
           {
             scoreId: 5,
             name: 'Hóa',
-            score: 6
+            score: 6,
+            credit: 3
           }
         ]
       },
@@ -40,27 +45,32 @@ export const initData = [
           {
             scoreId: 1,
             name: 'Văn',
-            score: 5
+            score: 5,
+            credit: 3
           },
           {
             scoreId: 2,
             name: 'Toán',
-            score: 8
+            score: 8,
+            credit: 2
           },
           {
             scoreId: 3,
             name: 'Anh',
-            score: 6
+            score: 6,
+            credit: 1
           },
           {
             scoreId: 4,
             name: 'Lý',
-            score: 9
+            score: 9,
+            credit: 4
           },
           {
             scoreId: 5,
             name: 'Hóa',
-            score: 7
+            score: 7,
+            credit: 3
           }
         ]
       },
@@ -71,27 +81,32 @@ export const initData = [
           {
             scoreId: 1,
             name: 'Văn',
-            score: 8
+            score: 8,
+            credit: 3
           },
           {
             scoreId: 2,
             name: 'Toán',
-            score: 8
+            score: 8,
+            credit: 2
           },
           {
             scoreId: 3,
             name: 'Anh',
-            score: 7
+            score: 7,
+            credit: 1
           },
           {
             scoreId: 4,
             name: 'Lý',
-            score: 6
+            score: 6,
+            credit: 4
           },
           {
             scoreId: 5,
             name: 'Hóa',
-            score: 5
+            score: 5,
+            credit: 3
           }
         ]
       },
@@ -102,27 +117,32 @@ export const initData = [
           {
             scoreId: 1,
             name: 'Văn',
-            score: 1
+            score: 1,
+            credit: 3
           },
           {
             scoreId: 2,
             name: 'Toán',
-            score: 1
+            score: 1,
+            credit: 2
           },
           {
             scoreId: 3,
             name: 'Anh',
-            score: 2
+            score: 2,
+            credit: 1
           },
           {
             scoreId: 4,
             name: 'Lý',
-            score: 3
+            score: 3,
+            credit: 4
           },
           {
             scoreId: 5,
             name: 'Hóa',
-            score: 4
+            score: 4,
+            credit: 3
           }
         ]
       },
@@ -133,27 +153,32 @@ export const initData = [
           {
             scoreId: 1,
             name: 'Văn',
-            score: 7
+            score: 7,
+            credit: 3
           },
           {
             scoreId: 2,
             name: 'Toán',
-            score: 9
+            score: 9,
+            credit: 2
           },
           {
             scoreId: 3,
             name: 'Anh',
-            score: 8
+            score: 8,
+            credit: 1
           },
           {
             scoreId: 4,
             name: 'Lý',
-            score: 5
+            score: 5,
+            credit: 4
           },
           {
             scoreId: 5,
             name: 'Hóa',
-            score: 6
+            score: 6,
+            credit: 3
           }
         ]
       },
@@ -164,27 +189,32 @@ export const initData = [
           {
             scoreId: 1,
             name: 'Văn',
-            score: 6
+            score: 6,
+            credit: 3
           },
           {
             scoreId: 2,
             name: 'Toán',
-            score: 7
+            score: 7,
+            credit: 2
           },
           {
             scoreId: 3,
             name: 'Anh',
-            score: 5
+            score: 5,
+            credit: 1
           },
           {
             scoreId: 4,
             name: 'Lý',
-            score: 4
+            score: 4,
+            credit: 4
           },
           {
             scoreId: 5,
             name: 'Hóa',
-            score: 3
+            score: 3,
+            credit: 3
           }
         ]
       },
@@ -195,27 +225,32 @@ export const initData = [
           {
             scoreId: 1,
             name: 'Văn',
-            score: 9
+            score: 9,
+            credit: 3
           },
           {
             scoreId: 2,
             name: 'Toán',
-            score: 6
+            score: 6,
+            credit: 2
           },
           {
             scoreId: 3,
             name: 'Anh',
-            score: 7
+            score: 7,
+            credit: 1
           },
           {
             scoreId: 4,
             name: 'Lý',
-            score: 8
+            score: 8,
+            credit: 4
           },
           {
             scoreId: 5,
             name: 'Hóa',
-            score: 5
+            score: 5,
+            credit: 3
           }
         ]
       },
@@ -226,27 +261,32 @@ export const initData = [
           {
             scoreId: 1,
             name: 'Văn',
-            score: 4
+            score: 4,
+            credit: 3
           },
           {
             scoreId: 2,
             name: 'Toán',
-            score: 7
+            score: 7,
+            credit: 2
           },
           {
             scoreId: 3,
             name: 'Anh',
-            score: 5
+            score: 5,
+            credit: 1
           },
           {
             scoreId: 4,
             name: 'Lý',
-            score: 6
+            score: 6,
+            credit: 4
           },
           {
             scoreId: 5,
             name: 'Hóa',
-            score: 7
+            score: 7,
+            credit: 3
           }
         ]
       },
@@ -257,27 +297,32 @@ export const initData = [
           {
             scoreId: 1,
             name: 'Văn',
-            score: 3
+            score: 3,
+            credit: 3
           },
           {
             scoreId: 2,
             name: 'Toán',
-            score: 8
+            score: 8,
+            credit: 2
           },
           {
             scoreId: 3,
             name: 'Anh',
-            score: 6
+            score: 6,
+            credit: 1
           },
           {
             scoreId: 4,
             name: 'Lý',
-            score: 7
+            score: 7,
+            credit: 4
           },
           {
             scoreId: 5,
             name: 'Hóa',
-            score: 5
+            score: 5,
+            credit: 3
           }
         ]
       },
@@ -288,27 +333,32 @@ export const initData = [
           {
             scoreId: 1,
             name: 'Văn',
-            score: 6
+            score: 6,
+            credit: 3
           },
           {
             scoreId: 2,
             name: 'Toán',
-            score: 5
+            score: 5,
+            credit: 2
           },
           {
             scoreId: 3,
             name: 'Anh',
-            score: 6
+            score: 6,
+            credit: 1
           },
           {
             scoreId: 4,
             name: 'Lý',
-            score: 4
+            score: 4,
+            credit: 4
           },
           {
             scoreId: 5,
             name: 'Hóa',
-            score: 3
+            score: 3,
+            credit: 3
           }
         ]
       }
