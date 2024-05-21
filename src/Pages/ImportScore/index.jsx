@@ -341,6 +341,589 @@ export const ImportScore = () => {
 		document.body.removeChild(link)
   };
 
+	const exportExcelIndividual = (fileName) => {
+		const wb = XLSX.utils.book_new()
+		const ws = XLSX.utils.aoa_to_sheet([])
+
+		let startRow = 0
+		ws['!merges'] = []
+		data[0].students.forEach((student) => {
+			const headerTitle = [
+				{
+					v: 'Bộ đội biên phòng',
+					s: {
+						alignment: {
+							horizontal: 'center',
+							vertical: 'center'
+						}
+					}
+				}
+			]
+
+			XLSX.utils.sheet_add_aoa(ws, [headerTitle], {
+				origin: { r: 0 + startRow, c: 0 }
+			})
+
+			const headerTitleRight = [
+				{
+					v: 'Cộng hòa xã hội chủ nghĩa Việt Nam',
+					s: {
+						font: { bold: true },
+						alignment: {
+							horizontal: 'center',
+							vertical: 'center'
+						}
+					}
+				}
+			]
+
+			XLSX.utils.sheet_add_aoa(ws, [headerTitleRight], {
+				origin: { r: 0 + startRow, c: 4 }
+			})
+
+			const headerTitleLine2 = [
+				{
+					v: 'TRƯỜNG CAO ĐẲNG BIÊN PHÒNG',
+					s: {
+						font: { bold: true },
+						alignment: {
+							horizontal: 'center',
+							vertical: 'center'
+						}
+					}
+				}
+			]
+
+			XLSX.utils.sheet_add_aoa(ws, [headerTitleLine2], {
+				origin: { r: 1 + startRow, c: 0 }
+			})
+
+			const headerTitleLine2Right = [
+				{
+					v: 'Độc lập - Tự do - Hạnh phúc',
+					s: {
+						font: { bold: true },
+						alignment: {
+							horizontal: 'center',
+							vertical: 'center'
+						}
+					}
+				}
+			]
+
+			XLSX.utils.sheet_add_aoa(ws, [headerTitleLine2Right], {
+				origin: { r: 1 + startRow, c: 4 }
+			})
+
+			ws['!merges'].push({
+				s: { r: 0 + startRow, c: 0 },
+				e: { r: 0 + startRow, c: 3 }
+			})
+			ws['!merges'].push({
+				s: { r: 1 + startRow, c: 0 },
+				e: { r: 1 + startRow, c: 3 }
+			})
+			ws['!merges'].push({
+				s: { r: 0 + startRow, c: 4 },
+				e: { r: 0 + startRow, c: 8 }
+			})
+			ws['!merges'].push({
+				s: { r: 1 + startRow, c: 4 },
+				e: { r: 1 + startRow, c: 8 }
+			})
+
+			const recordScore = [
+				{
+					v: 'PHIẾU ĐIỂM',
+					s: {
+						font: { bold: true },
+						alignment: {
+							horizontal: 'center',
+							vertical: 'center'
+						}
+					}
+				}
+			]
+
+			XLSX.utils.sheet_add_aoa(ws, [recordScore], {
+				origin: { r: 5 + startRow, c: 0 }
+			})
+
+			ws['!merges'].push({
+				s: { r: 5 + startRow, c: 0 },
+				e: { r: 5 + startRow, c: 8 }
+			})
+
+			//name
+
+			const nameTitle = [
+				{
+					v: 'Họ và tên',
+					s: {
+						font: { bold: true }
+					}
+				}
+			]
+
+			XLSX.utils.sheet_add_aoa(ws, [nameTitle], {
+				origin: { r: 7 + startRow, c: 1 }
+			})
+
+			ws['!merges'].push({
+				s: { r: 7 + startRow, c: 1 },
+				e: { r: 7 + startRow, c: 3 }
+			})
+
+			const name = [
+				{
+					v: student.name.toUpperCase(),
+					s: {
+						font: { bold: true }
+					}
+				}
+			]
+
+			XLSX.utils.sheet_add_aoa(ws, [name], {
+				origin: { r: 7 + startRow, c: 4 }
+			})
+
+			ws['!merges'].push({
+				s: { r: 7 + startRow, c: 4 },
+				e: { r: 7 + startRow, c: 8 }
+			})
+
+			//bd
+
+			const bdTitle = [
+				{
+					v: 'Ngày sinh',
+					s: {
+						font: { bold: true }
+					}
+				}
+			]
+
+			XLSX.utils.sheet_add_aoa(ws, [bdTitle], {
+				origin: { r: 8 + startRow, c: 1 }
+			})
+
+			ws['!merges'].push({
+				s: { r: 8 + startRow, c: 1 },
+				e: { r: 8 + startRow, c: 3 }
+			})
+
+			const bd = [
+				{
+					v: 'fake',
+					s: {
+						font: { bold: true }
+					}
+				}
+			]
+
+			XLSX.utils.sheet_add_aoa(ws, [bd], {
+				origin: { r: 8 + startRow, c: 4 }
+			})
+
+			ws['!merges'].push({
+				s: { r: 8 + startRow, c: 4 },
+				e: { r: 8 + startRow, c: 8 }
+			})
+
+			//que
+
+			const queTitle = [
+				{
+					v: 'Quê quán',
+					s: {
+						font: { bold: true }
+					}
+				}
+			]
+
+			XLSX.utils.sheet_add_aoa(ws, [queTitle], {
+				origin: { r: 9 + startRow, c: 1 }
+			})
+
+			ws['!merges'].push({
+				s: { r: 9 + startRow, c: 1 },
+				e: { r: 9 + startRow, c: 3 }
+			})
+
+			const que = [
+				{
+					v: 'BG',
+					s: {
+						font: { bold: true }
+					}
+				}
+			]
+
+			XLSX.utils.sheet_add_aoa(ws, [que], {
+				origin: { r: 9 + startRow, c: 4 }
+			})
+
+			ws['!merges'].push({
+				s: { r: 9 + startRow, c: 4 },
+				e: { r: 9 + startRow, c: 8 }
+			})
+
+			//clazz
+
+			const clazzTitle = [
+				{
+					v: 'Lớp học viên',
+					s: {
+						font: { bold: true }
+					}
+				}
+			]
+
+			XLSX.utils.sheet_add_aoa(ws, [clazzTitle], {
+				origin: { r: 10 + startRow, c: 1 }
+			})
+
+			ws['!merges'].push({
+				s: { r: 10 + startRow, c: 1 },
+				e: { r: 10 + startRow, c: 3 }
+			})
+
+			const clazz = [
+				{
+					v: 'Khóa',
+					s: {
+						font: { bold: true }
+					}
+				}
+			]
+
+			XLSX.utils.sheet_add_aoa(ws, [clazz], {
+				origin: { r: 10 + startRow, c: 4 }
+			})
+
+			ws['!merges'].push({
+				s: { r: 10 + startRow, c: 4 },
+				e: { r: 10 + startRow, c: 8 }
+			})
+
+			//
+
+			const border = {
+				top: { style: 'thin', color: { rgb: '000000' } }, // Đường viền trên (thin = mảnh)
+				bottom: { style: 'thin', color: { rgb: '000000' } }, // Đường viền dưới
+				left: { style: 'thin', color: { rgb: '000000' } }, // Đường viền trái
+				right: { style: 'thin', color: { rgb: '000000' } } // Đường viền phải
+			}
+
+			const headerRow1 = [
+				{
+					v: 'STT',
+					s: {
+						font: { bold: true },
+						alignment: {
+							horizontal: 'center',
+							vertical: 'center'
+						},
+						border
+					}
+				},
+				{
+					v: 'Tên môn học',
+					s: {
+						font: { bold: true },
+						alignment: {
+							horizontal: 'center',
+							vertical: 'center'
+						},
+						border
+					}
+				}
+			]
+
+			ws['!merges'].push({
+				s: { r: 12 + startRow, c: 1 },
+				e: { r: 12 + startRow, c: 6 }
+			})
+
+			XLSX.utils.sheet_add_aoa(ws, [headerRow1], {
+				origin: { r: 12 + startRow, c: 0 }
+			})
+
+			const headerRow2 = [
+				{
+					v: 'Số tín chỉ',
+					s: {
+						font: { bold: true },
+						alignment: {
+							horizontal: 'center',
+							vertical: 'center'
+						},
+						border
+					}
+				},
+				{
+					v: 'Điểm',
+					s: {
+						font: { bold: true },
+						alignment: {
+							horizontal: 'center',
+							vertical: 'center'
+						},
+						border
+					}
+				}
+			]
+
+			XLSX.utils.sheet_add_aoa(ws, [headerRow2], {
+				origin: { r: 12 + startRow, c: 7 }
+			})
+
+			student.scores.forEach((item, index) => {
+				const scoreRow = [
+					{
+						v: index + 1,
+						s: {
+							alignment: {
+								horizontal: 'center',
+								vertical: 'center'
+							},
+							border
+						}
+					},
+					{
+						v: item.name,
+						s: {
+							border
+						}
+					}
+				]
+
+				XLSX.utils.sheet_add_aoa(ws, [scoreRow], {
+					origin: { r: 12 + startRow + index + 1, c: 0 }
+				})
+
+				ws['!merges'].push({
+					s: { r: 12 + startRow + index + 1, c: 1 },
+					e: { r: 12 + startRow + index + 1, c: 6 }
+				})
+
+				const scoreRow2 = [
+					{
+						v: item.credit,
+						s: {
+							alignment: {
+								horizontal: 'center',
+								vertical: 'center'
+							},
+							border
+						}
+					},
+					{
+						v: item.score,
+						s: {
+							font: { bold: true },
+							alignment: {
+								horizontal: 'center',
+								vertical: 'center'
+							},
+							border
+						}
+					}
+				]
+
+				XLSX.utils.sheet_add_aoa(ws, [scoreRow2], {
+					origin: { r: 12 + startRow + index + 1, c: 7 }
+				})
+			})
+
+			// Áp dụng đường viền cho toàn bộ vùng merge
+			for (
+				let r = 12 + startRow;
+				r <= 12 + startRow + student.scores.length;
+				r++
+			) {
+				for (let c = 1; c <= 9; c++) {
+					const cellAddress = XLSX.utils.encode_cell({ r: r, c: c })
+					if (!ws[cellAddress]) {
+						ws[cellAddress] = { v: '' } // Khởi tạo ô nếu chưa tồn tại
+					}
+					if (!ws[cellAddress].s) {
+						ws[cellAddress].s = {} // Khởi tạo style nếu chưa tồn tại
+					}
+					if (!ws[cellAddress].s.border) {
+						ws[cellAddress].s.border = {} // Khởi tạo border nếu chưa tồn tại
+					}
+					// Thiết lập border cho ô
+					ws[cellAddress].s.border = border
+				}
+			}
+
+			//result1
+
+			const resultTitle1 = [
+				{
+					v: 'Điểm trung bình của học phần'
+				}
+			]
+
+			XLSX.utils.sheet_add_aoa(ws, [resultTitle1], {
+				origin: { r: 14 + startRow + student.scores.length, c: 1 }
+			})
+
+			ws['!merges'].push({
+				s: { r: 14 + startRow + student.scores.length, c: 1 },
+				e: { r: 14 + startRow + student.scores.length, c: 3 }
+			})
+
+			const result1 = [
+				{
+					v: 'Fake'
+				}
+			]
+
+			XLSX.utils.sheet_add_aoa(ws, [result1], {
+				origin: { r: 14 + startRow + student.scores.length, c: 6 }
+			})
+
+			//result2
+
+			const resultTitle2 = [
+				{
+					v: 'Điểm trung bình thi cuối khóa'
+				}
+			]
+
+			XLSX.utils.sheet_add_aoa(ws, [resultTitle2], {
+				origin: { r: 15 + startRow + student.scores.length, c: 1 }
+			})
+
+			ws['!merges'].push({
+				s: { r: 15 + startRow + student.scores.length, c: 1 },
+				e: { r: 15 + startRow + student.scores.length, c: 3 }
+			})
+
+			const result2 = [
+				{
+					v: 'Fake'
+				}
+			]
+
+			XLSX.utils.sheet_add_aoa(ws, [result2], {
+				origin: { r: 15 + startRow + student.scores.length, c: 6 }
+			})
+			//result3
+
+			const resultTitle3 = [
+				{
+					v: 'Điểm trung bình của toàn khóa'
+				}
+			]
+
+			XLSX.utils.sheet_add_aoa(ws, [resultTitle3], {
+				origin: { r: 16 + startRow + student.scores.length, c: 1 }
+			})
+
+			ws['!merges'].push({
+				s: { r: 16 + startRow + student.scores.length, c: 1 },
+				e: { r: 16 + startRow + student.scores.length, c: 3 }
+			})
+
+			const result3 = [
+				{
+					v: 'Fake'
+				}
+			]
+
+			XLSX.utils.sheet_add_aoa(ws, [result3], {
+				origin: { r: 16 + startRow + student.scores.length, c: 6 }
+			})
+
+			//result4
+
+			const resultTitle4 = [
+				{
+					v: 'Xếp loại tốt nghiệp'
+				}
+			]
+
+			XLSX.utils.sheet_add_aoa(ws, [resultTitle4], {
+				origin: { r: 17 + startRow + student.scores.length, c: 1 }
+			})
+
+			ws['!merges'].push({
+				s: { r: 17 + startRow + student.scores.length, c: 1 },
+				e: { r: 17 + startRow + student.scores.length, c: 3 }
+			})
+
+			const result4 = [
+				{
+					v: 'Fake'
+				}
+			]
+
+			XLSX.utils.sheet_add_aoa(ws, [result4], {
+				origin: { r: 17 + startRow + student.scores.length, c: 6 }
+			})
+
+			const signAddress = [
+				{
+					v: 'Bắc Giang, ngày    tháng    năm',
+					s: {
+						font: { italic: true }
+					}
+				}
+			]
+
+			XLSX.utils.sheet_add_aoa(ws, [signAddress], {
+				origin: { r: 20 + startRow + student.scores.length, c: 6 }
+			})
+
+			ws['!merges'].push({
+				s: { r: 20 + startRow + student.scores.length, c: 6 },
+				e: { r: 20 + startRow + student.scores.length, c: 8 }
+			})
+
+			const sign = [
+				{
+					v: 'Hiệu trưởng',
+					s: {
+						font: { bold: true },
+						alignment: {
+							horizontal: 'center',
+							vertical: 'center'
+						}
+					}
+				}
+			]
+
+			XLSX.utils.sheet_add_aoa(ws, [sign], {
+				origin: { r: 21 + startRow + student.scores.length, c: 6 }
+			})
+
+			ws['!merges'].push({
+				s: { r: 21 + startRow + student.scores.length, c: 6 },
+				e: { r: 21 + startRow + student.scores.length, c: 8 }
+			})
+
+			startRow = startRow + 50
+		})
+
+		XLSX.utils.book_append_sheet(wb, ws, 'Sheet1')
+
+		const excelBuffer = XLSX.write(wb, { type: 'array', bookType: 'xlsx' })
+		const blob = new Blob([excelBuffer], {
+			type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+		})
+		const url = window.URL.createObjectURL(blob)
+		const link = document.createElement('a')
+		link.href = url
+		link.setAttribute('download', fileName)
+		document.body.appendChild(link)
+		console.log(link)
+		link.click()
+		document.body.removeChild(link)
+	}
+
   return (
     <div>
       <Select className="w-[200px] mr-3" placeholder="Chọn lớp">
