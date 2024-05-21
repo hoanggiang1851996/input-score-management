@@ -49,7 +49,267 @@ export const ImportScore = () => {
   };
 
   const handleExport = (fileName, position) => {
-    https://codedamn.com/problem/VMQ1SGlrIMCv3AYs5xpB-?previous=%2Fproblems%3Fpage%3D1
+    console.log(data)
+		const wb = XLSX.utils.book_new()
+		const ws = XLSX.utils.aoa_to_sheet([])
+
+		const dataWidth = data[0].students[0].scores.length // Number of smaller score columns
+
+		const cols = [
+			{ wch: 5 }, // STT column
+			{ wch: 20 } // Họ và Tên column
+		]
+
+		// Add "Điểm tổng kết môn học" column multiple times
+		for (let i = 0; i < dataWidth; i++) {
+			cols.push({ wch: 5 })
+		}
+
+		// Add remaining columns
+		cols.push(
+			{ wch: 5 }, // TB column
+			{ wch: 20 } // Ghi chú column
+			// Add more widths for additional columns as needed
+		)
+
+		ws['!cols'] = cols
+		const cellRef = position
+		const range = XLSX.utils.decode_range(cellRef)
+		let startRow = range.s.r
+
+		const headerTitle = [
+			{
+				v: 'Bộ đội biên phòng',
+				s: {
+					alignment: { horizontal: 'center', vertical: 'center' }
+				}
+			}
+		]
+
+		XLSX.utils.sheet_add_aoa(ws, [headerTitle], {
+			origin: { r: 0, c: 0 }
+		})
+
+		const headerTitle2 = [
+			{
+				v: 'Kết quả học tập lớp 12C - tiếng Lào sỹ quan',
+				s: {
+					font: { bold: true, size: 16 },
+					alignment: { horizontal: 'center', vertical: 'center' }
+				}
+			}
+		]
+
+		XLSX.utils.sheet_add_aoa(ws, [headerTitle2], {
+			origin: { r: 0, c: 2 }
+		})
+
+		XLSX.utils.sheet_add_aoa(ws, [headerTitle], {
+			origin: { r: 0, c: 0 }
+		})
+
+		ws['!merges'] = []
+
+		const headerTitleLine2 = [
+			{
+				v: 'Trường cao đẳng Biên Phòng',
+				s: {
+					font: { bold: true },
+					alignment: { horizontal: 'center', vertical: 'center' }
+				}
+			}
+		]
+
+		XLSX.utils.sheet_add_aoa(ws, [headerTitleLine2], {
+			origin: { r: 1, c: 0 }
+		})
+
+		ws['!merges'] = [
+			{ s: { r: 0, c: 0 }, e: { r: 0, c: 1 } },
+			{
+				s: { r: 0, c: 2 },
+				e: { r: 0, c: 3 + data[0].students[0].scores.length }
+			},
+			{ s: { r: 1, c: 0 }, e: { r: 1, c: 1 } }
+		]
+
+		const headerRow1 = [
+			{
+				v: 'STT',
+				s: {
+					font: { bold: true },
+					alignment: { horizontal: 'center', vertical: 'center' }
+				}
+			},
+			{
+				v: 'Họ và Tên',
+				s: {
+					font: { bold: true },
+					alignment: { horizontal: 'center', vertical: 'center' }
+				}
+			},
+			{
+				v: 'Điểm tổng kết môn học',
+				s: {
+					font: { bold: true },
+					alignment: { horizontal: 'center', vertical: 'center' }
+				}
+			},
+			{
+				v: 'TB',
+				s: {
+					font: { bold: true },
+					alignment: { horizontal: 'center', vertical: 'center' }
+				}
+			},
+			{
+				v: 'Ghi chú',
+				s: {
+					font: { bold: true },
+					alignment: { horizontal: 'center', vertical: 'center' }
+				}
+			}
+		]
+
+		const scoreNamesRow = [
+			'',
+			'',
+			...data[0].students[0].scores.map((score) => ({
+				v: score.name,
+				s: {
+					font: { bold: true },
+					alignment: { horizontal: 'center', vertical: 'center' }
+				}
+			})),
+			'',
+			''
+		]
+
+		console.log(data[0].students[0].scores)
+
+		const creditCodeRow = [
+			'',
+			'',
+			...data[0].students[0].scores.map((score) => score.credit),
+			{
+				f: `SUM(${XLSX.utils.encode_cell({
+					r: startRow + 2,
+					c: range.s.c + 2
+				})}:${XLSX.utils.encode_cell({
+					r: startRow + 2,
+					c: range.s.c + 1 + data[0].students[0].scores.length
+				})})`,
+				s: {
+					font: { bold: true },
+					alignment: { horizontal: 'center', vertical: 'center' }
+				}
+			},
+			''
+		]
+
+		XLSX.utils.sheet_add_aoa(
+			ws,
+			[headerRow1, scoreNamesRow, creditCodeRow],
+			{
+				origin: { r: startRow, c: range.s.c }
+			}
+		)
+
+		const sttMerge = {
+			s: { r: range.s.r, c: range.s.c },
+			e: { r: range.s.r + 2, c: range.s.c }
+		}
+		if (!ws['!merges']) ws['!merges'] = []
+		ws['!merges'].push(sttMerge)
+
+		const nameMerge = {
+			s: { r: range.s.r, c: range.s.c + 1 },
+			e: { r: range.s.r + 2, c: range.s.c + 1 }
+		}
+		console.log(nameMerge)
+		ws['!merges'].push(nameMerge)
+
+		const scoreMergeEnd = range.s.c + data[0].students[0].scores.length - 1
+		const scoreMerge = {
+			s: { r: startRow, c: range.s.c + 2 },
+			e: { r: startRow, c: scoreMergeEnd + 2 }
+		}
+		ws['!merges'].push(scoreMerge)
+
+		const tbMerge = {
+			s: { r: range.s.r, c: scoreMergeEnd + 3 },
+			e: { r: range.s.r + 1, c: scoreMergeEnd + 3 }
+		}
+		ws['!merges'].push(tbMerge)
+
+		const noteMerge = {
+			s: { r: range.s.r, c: scoreMergeEnd + 4 },
+			e: { r: range.s.r + 2, c: scoreMergeEnd + 4 }
+		}
+		ws['!merges'].push(noteMerge)
+
+		startRow += 3
+
+		data[0].students.forEach((student, index) => {
+			const studentInfo = [index + 1, student.name]
+			const scores = []
+			let totalScore = 0
+
+			student.scores.forEach((score) => {
+				scores.push(score.score)
+				totalScore += score.score
+			})
+
+			const averageFormula = `SUM(${XLSX.utils.encode_cell({
+				r: startRow,
+				c: range.s.c + 2
+			})}:${XLSX.utils.encode_cell({
+				r: startRow,
+				c: range.s.c + 1 + student.scores.length
+			})})/${student.scores.length}`
+
+			const note = 'Example note' // You can replace this with actual notes if available
+			const row = [
+				...studentInfo,
+				...scores,
+				{
+					f: averageFormula,
+					s: {
+						alignment: { horizontal: 'center' },
+						font: { bold: true }
+					}
+				},
+				{ v: note, s: { alignment: { horizontal: 'center' } } }
+			]
+			XLSX.utils.sheet_add_aoa(ws, [row], {
+				origin: { r: startRow, c: range.s.c }
+			})
+			startRow++
+		})
+
+		ws[XLSX.utils.encode_cell({ r: range.s.r, c: scoreMergeEnd + 3 })] = {
+			v: 'TB',
+			s: { font: { bold: true }, alignment: { horizontal: 'center' } }
+		}
+		ws[XLSX.utils.encode_cell({ r: range.s.r, c: scoreMergeEnd + 4 })] = {
+			v: 'Ghi chú',
+			s: { font: { bold: true }, alignment: { horizontal: 'center' } }
+		}
+
+		XLSX.utils.book_append_sheet(wb, ws, 'Sheet1')
+
+		const excelBuffer = XLSX.write(wb, { type: 'array', bookType: 'xlsx' })
+		const blob = new Blob([excelBuffer], {
+			type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+		})
+		const url = window.URL.createObjectURL(blob)
+		const link = document.createElement('a')
+		link.href = url
+		link.setAttribute('download', fileName)
+		document.body.appendChild(link)
+		console.log(link)
+		link.click()
+		document.body.removeChild(link)
   };
 
   return (
