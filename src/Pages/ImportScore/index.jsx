@@ -37,7 +37,6 @@ export const ImportScore = () => {
   }
 
   const saveTable = () => {
-    console.log(data);
     setLoading(true);
     setTimeout(() => {
       setLoading(false);
@@ -341,13 +340,13 @@ export const ImportScore = () => {
 		document.body.removeChild(link)
   };
 
-	const exportExcelIndividual = (fileName) => {
+	const exportExcelIndividual = (fileName, dataExcel) => {
 		const wb = XLSX.utils.book_new()
 		const ws = XLSX.utils.aoa_to_sheet([])
 
 		let startRow = 0
 		ws['!merges'] = []
-		data[0].students.forEach((student) => {
+    dataExcel.forEach((student) => {
 			const headerTitle = [
 				{
 					v: 'Bộ đội biên phòng',
@@ -869,8 +868,13 @@ export const ImportScore = () => {
 				{
 					v: 'Bắc Giang, ngày    tháng    năm',
 					s: {
-						font: { italic: true }
-					}
+						font: { italic: true },
+            alignment: {
+              horizontal: 'center',
+              vertical: 'center'
+            }
+					},
+
 				}
 			]
 
@@ -951,7 +955,13 @@ export const ImportScore = () => {
       }}>In cá nhân</Button>
       <Button className="mr-3" type="primary" icon={<FileExcelOutlined/>} onClick={() => handleExport('student_scores.xlsx', 'A4')}>Xuất
         excel</Button>
-	<Button className="mr-3" type="primary" icon={<FileExcelOutlined/>} onClick={() => exportExcelIndividual('student_scores.xlsx')}>Xuất
+	<Button className="mr-3" type="primary" icon={<FileExcelOutlined/>} onClick={() => {
+    if (checked.length === 0) {
+      message.warning("Vui lòng chọn học sinh để in.");
+      return;
+    }
+    exportExcelIndividual('student_scores.xlsx', checked.map((item) => data[0].students[item]))
+  }}>Xuất
         excel cá nhân</Button>
       <table className="mt-3 custom-table text-center">
         <thead>
@@ -967,6 +977,7 @@ export const ImportScore = () => {
         <th>STT</th>
         <th>Họ và tên</th>
         <th colSpan={data[0].students[0].scores.length + 1}>Điểm</th>
+        <th>Xếp loại</th>
         <th>Ghi chú</th>
         </thead>
         <tbody>
@@ -987,7 +998,9 @@ export const ImportScore = () => {
             Điểm TB
           </td>
           <td></td>
+          <td></td>
         </tr>
+
         <tr className="font-bold">
           <td></td>
           <td></td>
@@ -995,14 +1008,25 @@ export const ImportScore = () => {
           {data[0].students[0].scores.map((item) => {
             return (
               <td key={item.id} style={{textAlign: 'center'}}>
-                {item.scoreId}
+                {item.credit}
               </td>
             )
           })}
-          <td>27</td>
+          {data[0].students[0].scores.reduce((acc, score) => {
+            return acc + score.credit;
+          }, 0)}
+          <td></td>
           <td></td>
         </tr>
         {data[0].students.map((item, index) => {
+          let total = 0;
+          let totalCredit = 0;
+
+          item.scores.forEach((score) => {
+            total = total + score.score * score.credit
+            totalCredit = totalCredit + score.credit
+          });
+
           return (
             <tr key={item.studentId}>
               <td>
@@ -1039,12 +1063,29 @@ export const ImportScore = () => {
                 )
               })}
               <td>
-                1
+                {(total / totalCredit).toFixed(1)}
               </td>
               <td>
                 {isEdit ? (
-                  <Input/>
-                ) : <span>Note</span>}
+                  <Input value={item.rank}
+                         onChange={(e) => {
+                           const newData = [...data]
+
+                           newData[0].students[index].rank = e.target.value;
+                           setData(newData);
+                         }} />
+                ) : <span>{item.rank}</span>}
+              </td>
+              <td>
+                {isEdit ? (
+                  <Input value={item.note}
+                         onChange={(e) => {
+                           const newData = [...data]
+
+                           newData[0].students[index].note = e.target.value;
+                           setData(newData);
+                         }} />
+                ) : <span>{item.note}</span>}
               </td>
             </tr>
           )
