@@ -49,8 +49,7 @@ export const ImportScore = () => {
   };
 
   const handleExport = (fileName, position) => {
-    console.log(data)
-		const wb = XLSX.utils.book_new()
+    const wb = XLSX.utils.book_new()
 		const ws = XLSX.utils.aoa_to_sheet([])
 
 		const dataWidth = data[0].students[0].scores.length // Number of smaller score columns
@@ -68,6 +67,7 @@ export const ImportScore = () => {
 		// Add remaining columns
 		cols.push(
 			{ wch: 5 }, // TB column
+			{ wch: 20 }, // Ghi chú column
 			{ wch: 20 } // Ghi chú column
 			// Add more widths for additional columns as needed
 		)
@@ -163,6 +163,13 @@ export const ImportScore = () => {
 				}
 			},
 			{
+				v: 'Xếp loại',
+				s: {
+					font: { bold: true },
+					alignment: { horizontal: 'center', vertical: 'center' }
+				}
+			},
+			{
 				v: 'Ghi chú',
 				s: {
 					font: { bold: true },
@@ -184,8 +191,6 @@ export const ImportScore = () => {
 			'',
 			''
 		]
-
-		console.log(data[0].students[0].scores)
 
 		const creditCodeRow = [
 			'',
@@ -226,7 +231,6 @@ export const ImportScore = () => {
 			s: { r: range.s.r, c: range.s.c + 1 },
 			e: { r: range.s.r + 2, c: range.s.c + 1 }
 		}
-		console.log(nameMerge)
 		ws['!merges'].push(nameMerge)
 
 		const scoreMergeEnd = range.s.c + data[0].students[0].scores.length - 1
@@ -242,16 +246,21 @@ export const ImportScore = () => {
 		}
 		ws['!merges'].push(tbMerge)
 
-		const noteMerge = {
+		const rankMerge = {
 			s: { r: range.s.r, c: scoreMergeEnd + 4 },
 			e: { r: range.s.r + 2, c: scoreMergeEnd + 4 }
+		}
+		ws['!merges'].push(rankMerge)
+
+		const noteMerge = {
+			s: { r: range.s.r, c: scoreMergeEnd + 5 },
+			e: { r: range.s.r + 2, c: scoreMergeEnd + 5 }
 		}
 		ws['!merges'].push(noteMerge)
 
 		startRow += 3
 
 		data[0].students.forEach((student, index) => {
-			console.log(student)
 			let dataSum = ''
 			const studentInfo = [index + 1, student.name]
 			const scores = []
@@ -274,8 +283,6 @@ export const ImportScore = () => {
 					})}${indexScore !== student.scores.length - 1 ? ',' : ''} `
 			})
 
-			console.log(dataSum)
-
 			const averageFormula = `ROUND(SUM(${dataSum})/${XLSX.utils.encode_cell(
 				{
 					r: startRow - index - 1,
@@ -283,9 +290,6 @@ export const ImportScore = () => {
 				}
 			)}, 1)`
 
-			console.log(averageFormula)
-
-			const note = 'Example note' // You can replace this with actual notes if available
 			const row = [
 				...studentInfo,
 				...scores,
@@ -296,7 +300,11 @@ export const ImportScore = () => {
 						font: { bold: true }
 					}
 				},
-				{ v: note, s: { alignment: { horizontal: 'center' } } }
+				{
+					v: student.rank,
+					s: { alignment: { horizontal: 'center' } }
+				},
+				{ v: student.note, s: { alignment: { horizontal: 'center' } } }
 			]
 			XLSX.utils.sheet_add_aoa(ws, [row], {
 				origin: { r: startRow, c: range.s.c }
@@ -309,6 +317,10 @@ export const ImportScore = () => {
 			s: { font: { bold: true }, alignment: { horizontal: 'center' } }
 		}
 		ws[XLSX.utils.encode_cell({ r: range.s.r, c: scoreMergeEnd + 4 })] = {
+			v: 'Rank',
+			s: { font: { bold: true }, alignment: { horizontal: 'center' } }
+		}
+		ws[XLSX.utils.encode_cell({ r: range.s.r, c: scoreMergeEnd + 5 })] = {
 			v: 'Ghi chú',
 			s: { font: { bold: true }, alignment: { horizontal: 'center' } }
 		}
