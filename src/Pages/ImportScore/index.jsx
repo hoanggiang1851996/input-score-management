@@ -251,6 +251,8 @@ export const ImportScore = () => {
 		startRow += 3
 
 		data[0].students.forEach((student, index) => {
+			console.log(student)
+			let dataSum = ''
 			const studentInfo = [index + 1, student.name]
 			const scores = []
 			let totalScore = 0
@@ -260,13 +262,28 @@ export const ImportScore = () => {
 				totalScore += score.score
 			})
 
-			const averageFormula = `SUM(${XLSX.utils.encode_cell({
-				r: startRow,
-				c: range.s.c + 2
-			})}:${XLSX.utils.encode_cell({
-				r: startRow,
-				c: range.s.c + 1 + student.scores.length
-			})})/${student.scores.length}`
+			student.scores.forEach((item, indexScore) => {
+				dataSum =
+					dataSum +
+					`${XLSX.utils.encode_cell({
+						r: startRow,
+						c: range.s.c + 2 + indexScore
+					})}*${XLSX.utils.encode_cell({
+						r: startRow - index - 1,
+						c: range.s.c + 2 + indexScore
+					})}${indexScore !== student.scores.length - 1 ? ',' : ''} `
+			})
+
+			console.log(dataSum)
+
+			const averageFormula = `ROUND(SUM(${dataSum})/${XLSX.utils.encode_cell(
+				{
+					r: startRow - index - 1,
+					c: range.s.c + 2 + student.scores.length
+				}
+			)}, 1)`
+
+			console.log(averageFormula)
 
 			const note = 'Example note' // You can replace this with actual notes if available
 			const row = [
