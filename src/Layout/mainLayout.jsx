@@ -1,10 +1,41 @@
-import {Breadcrumb, Layout, Menu, theme} from "antd";
-import {useState} from "react";
-import {Outlet, useNavigate} from "react-router-dom";
-import {DesktopOutlined, FileOutlined, PieChartOutlined, TeamOutlined, UserOutlined} from "@ant-design/icons";
+import {Layout, Menu, theme} from "antd";
+import {useEffect, useState} from "react";
+import {Outlet, useLocation, useNavigate} from "react-router-dom";
+import {DesktopOutlined, FileOutlined, PieChartOutlined, TeamOutlined, UserOutlined, UnorderedListOutlined} from "@ant-design/icons";
 const { Header, Content, Footer, Sider } = Layout;
+
+
 export const MainLayout = () => {
   const [collapsed, setCollapsed] = useState(false);
+  const [selectedKeys, setSelectedKeys] = useState([]);
+  const location = useLocation();
+
+  useEffect(() => {
+    const pathName = location.pathname;
+    switch (pathName) {
+      case "/category-management":
+        setSelectedKeys(["1"]);
+        break;
+      case "/course-management":
+        setSelectedKeys(["2"]);
+        break;
+      case "/subject-management":
+        setSelectedKeys(["3"]);
+        break;
+      case "/student-management":
+        setSelectedKeys(["4"]);
+        break;
+      case "/course-unit-management":
+        setSelectedKeys(["5"]);
+        break;
+      case "/import-score":
+        setSelectedKeys(["6"]);
+        break;
+      default:
+        break;
+    }
+  }, []);
+
   const {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();
@@ -18,11 +49,12 @@ export const MainLayout = () => {
     };
   }
   const items = [
-    getItem(<div onClick={() => navigate("course-management")}>Quản lý khóa học</div>, '1', <PieChartOutlined />),
-    getItem(<div onClick={() => navigate("class-management")}>Quản lý lớp</div>, '2', <DesktopOutlined />),
-    getItem(<div onClick={() => navigate("student-management")}>Quản lý học viên</div>, '3', <UserOutlined />),
-    getItem(<div onClick={() => navigate("course-unit-management")}>Quản lý học phần</div>, '4', <TeamOutlined />),
-    getItem(<div onClick={() => navigate("import-score")}>Nhập điểm</div>, '9', <FileOutlined />),
+    getItem(<div onClick={() => navigate("category-management")}>Quản lý danh mục</div>, '1', <UnorderedListOutlined />),
+    getItem(<div onClick={() => navigate("course-management")}>Quản lý khóa học</div>, '2', <PieChartOutlined />),
+    getItem(<div onClick={() => navigate("subject-management")}>Quản lý môn học</div>, '3', <DesktopOutlined />),
+    getItem(<div onClick={() => navigate("student-management")}>Quản lý học viên</div>, '4', <UserOutlined />),
+    getItem(<div onClick={() => navigate("course-unit-management")}>Quản lý học phần</div>, '5', <TeamOutlined />),
+    getItem(<div onClick={() => navigate("import-score")}>Nhập điểm</div>, '6', <FileOutlined />),
   ];
   return (
     <Layout
@@ -32,7 +64,7 @@ export const MainLayout = () => {
     >
       <Sider collapsible collapsed={collapsed} onCollapse={(value) => setCollapsed(value)}>
         <div className="demo-logo-vertical" />
-        <Menu theme="dark" defaultSelectedKeys={['1']} mode="inline" items={items} />
+        <Menu onSelect={(e) => setSelectedKeys(e.selectedKeys)} selectedKeys={selectedKeys} theme="dark" defaultSelectedKeys={['1']} mode="inline" items={items} />
       </Sider>
       <Layout>
         <Header
@@ -46,17 +78,18 @@ export const MainLayout = () => {
             margin: '0 16px',
           }}
         >
-          <Breadcrumb
-            style={{
-              margin: '16px 0',
-            }}
-          >
-            <Breadcrumb.Item>User</Breadcrumb.Item>
-            <Breadcrumb.Item>Bill</Breadcrumb.Item>
-          </Breadcrumb>
+          {/*<Breadcrumb*/}
+          {/*  style={{*/}
+          {/*    margin: '16px 0',*/}
+          {/*  }}*/}
+          {/*>*/}
+          {/*  <Breadcrumb.Item>User</Breadcrumb.Item>*/}
+          {/*  <Breadcrumb.Item>Bill</Breadcrumb.Item>*/}
+          {/*</Breadcrumb>*/}
           <div
             style={{
               padding: 24,
+              marginTop: 30,
               minHeight: 360,
               background: colorBgContainer,
               borderRadius: borderRadiusLG,

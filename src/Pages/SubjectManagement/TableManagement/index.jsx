@@ -1,4 +1,4 @@
-import {Button, Form, Input, Modal, Popconfirm, Select, Table} from "antd";
+import {Button, Form, Input, InputNumber, Modal, Popconfirm, Select, Table} from "antd";
 import {useEffect, useState} from "react";
 import {EditOutlined, DeleteOutlined, PlusOutlined} from "@ant-design/icons";
 
@@ -7,47 +7,61 @@ export const TableManagement = () => {
   const initData = [
     {
       key: 1,
-      code: "KHOA_A7_K51",
-      name: "Khoá A7 K51",
-      category: "Danh mục khoá học II",
-      description: "Khoá A7 K51"
+      code: "VAN",
+      name: "Văn",
+      number: 3,
+      course: "Khoá A7 K51",
+      description: ""
     },
     {
       key: 2,
-      code: "KHOA_A8_K51",
-      name: "Khoá A8 K51",
-      category: "Danh mục khoá học I",
-      description: "Khoá A8 K51"
+      code: "TOAN",
+      name: "Toán",
+      number: 3,
+      course: "Khoá A7 K52",
+      description: ""
+    },
+    {
+      key: 3,
+      code: "LY",
+      name: "Lý",
+      number: 2,
+      course: "Khoá A7 K51",
+      description: ""
     }
   ];
 
-  const categoryList = [
+  const initDataCourse = [
     {
       id: 1,
-      name: "Danh mục khoá học I",
-      description: "Danh mục khoá học I"
+      code: "KHOA_A7_K51",
+      name: "Khoá A7 K51",
+      category: "Danh mục khoá học II",
+      description: "Khoá A7 K51",
     },
     {
       id: 2,
-      name: "Danh mục khoá học II",
-      description: "Danh mục khoá học II"
+      code: "KHOA_A7_K52",
+      name: "Khoá A7 K52",
+      category: "Danh mục khoá học I",
+      description: "Khoá A7 K52",
     }
   ]
 
-  useEffect(() => {
-    // call API list and setData
-  }, []);
-
-  const deleteCourse = (course) => {
+  const deleteCategory = (category) => {
     const newData = [...data];
-
-    setData(newData.filter((item) => item.key !== course.key));
+    setData(newData.filter((item) => item.key !== category.key));
   };
 
   const [data, setData] = useState(initData);
-  const [categories, setCategories] = useState(categoryList);
+  const [courses, setCourses] = useState(initDataCourse);
   const [isOpenModalCreate, setIsOpenModalCreate] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
+
+  useEffect(() => {
+    // call API Course
+  }, []);
+
   const columns = [
     {
       title: "STT",
@@ -55,19 +69,24 @@ export const TableManagement = () => {
       dataIndex: 'key'
     },
     {
-      title: "Mã khóa học",
+      title: "Mã môn học",
       key: "code",
-      dataIndex: 'code'
+      dataIndex: 'code',
     },
     {
-      title: "Tên khóa học",
+      title: "Tên môn học",
       key: "name",
       dataIndex: 'name'
     },
     {
-      title: "Danh mục",
-      key: "category",
-      dataIndex: 'category'
+      title: "Số tín chỉ",
+      key: "number",
+      dataIndex: 'number'
+    },
+    {
+      title: "Khoá học",
+      key: "course",
+      dataIndex: 'course'
     },
     {
       title: "Mô tả",
@@ -80,21 +99,22 @@ export const TableManagement = () => {
       dataIndex: 'action',
       width: 150,
       render: (data, row) => {
+        console.log(row)
         return (
           <div>
             <EditOutlined className="mr-3" onClick={() => {
               form.setFieldsValue(row);
               setIsOpenModalCreate(true);
               setIsEdit(true);
-            }} />
+            }}/>
             <Popconfirm
-              title="Xóa khóa học"
-              description="Bạn muốn xóa khóa học này không?"
-              onConfirm={() => deleteCourse(row)}
+              title="Xóa môn học"
+              description="Bạn muốn xóa môn học này không?"
+              onConfirm={() => deleteCategory(row)}
               okText="Đồng ý"
               cancelText="Hủy"
             >
-              <DeleteOutlined />
+              <DeleteOutlined/>
             </Popconfirm>
           </div>
         )
@@ -107,9 +127,7 @@ export const TableManagement = () => {
   };
 
   const handleSubmit = (values) => {
-    // call API post send values
-
-    // fake
+    // check isEdit to call API
     setData([
       ...data,
       values
@@ -132,14 +150,14 @@ export const TableManagement = () => {
   return (
     <div className="mt-3">
       <div className="text-right">
-        <Button onClick={() => openModalCreate()} icon={<PlusOutlined />} type="primary">Thêm mới</Button>
+        <Button onClick={() => openModalCreate()} icon={<PlusOutlined/>} type="primary">Thêm mới</Button>
       </div>
       <div className="mt-3">
-        <Table dataSource={data} columns={columns} />
+        <Table dataSource={data} columns={columns}/>
       </div>
 
       {isOpenModalCreate && (
-        <Modal title={`${isEdit ? "Chỉnh sửa" : "Thêm mới"} khoá học`} open={isOpenModalCreate} footer={[]} onCancel={handleCancel}>
+        <Modal destroyOnClose={true} title={`${isEdit ? "Chỉnh sửa" : "Thêm mới"} môn học`} open={isOpenModalCreate} footer={[]} onCancel={handleCancel}>
           <Form
             form={form}
             onFinish={handleSubmit}
@@ -148,12 +166,12 @@ export const TableManagement = () => {
             layout="vertical"
           >
             <Form.Item
-              label="Mã khoá học"
+              label="Mã môn học"
               name="code"
               rules={[
                 {
                   required: true,
-                  message: 'Vui lòng nhập mã khoá học.',
+                  message: 'Vui lòng nhập mã môn học.',
                 },
               ]}
             >
@@ -161,12 +179,12 @@ export const TableManagement = () => {
             </Form.Item>
 
             <Form.Item
-              label="Tên khoá học"
+              label="Tên môn học"
               name="name"
               rules={[
                 {
                   required: true,
-                  message: 'Vui lòng nhập tên khoá học.',
+                  message: 'Vui lòng nhập tên môn học.',
                 },
               ]}
             >
@@ -174,18 +192,30 @@ export const TableManagement = () => {
             </Form.Item>
 
             <Form.Item
-              label="Mô tả"
-              name="description"
+              label="Số tín chỉ"
+              name="number"
+              rules={[
+                {
+                  required: true,
+                  message: 'Vui lòng nhập số tín chỉ.',
+                },
+              ]}
             >
-              <Input placeholder="Nhập thông tin" />
+              <InputNumber className="w-full" placeholder="Nhập thông tin" />
             </Form.Item>
 
             <Form.Item
-              label="Thuộc danh mục"
-              name="category"
+              label="Khoá học"
+              name="course"
+              rules={[
+                {
+                  required: true,
+                  message: 'Vui lòng chọn khoá học.',
+                },
+              ]}
             >
               <Select placeholder="Chọn">
-                {categories.map((item, index) => {
+                {courses.map((item) => {
                   return (
                     <Select.Option key={item.id} value={item.id}>
                       {item.name}
@@ -193,6 +223,13 @@ export const TableManagement = () => {
                   )
                 })}
               </Select>
+            </Form.Item>
+
+            <Form.Item
+              label="Mô tả"
+              name="description"
+            >
+              <Input placeholder="Nhập thông tin" />
             </Form.Item>
 
             <div className="text-right">

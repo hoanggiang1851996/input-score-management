@@ -1,11 +1,9 @@
-import {FormSearch} from "./FormSearch/index.jsx";
 import {TableManagement} from "./TableManagement/index.jsx";
 
-export const StudentManagement = () => {
+export const SubjectManagement = () => {
   return (
     <div>
-      <FormSearch />
       <TableManagement />
     </div>
-  );
+  )
 }
