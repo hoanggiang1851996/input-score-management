@@ -25,11 +25,14 @@ export const MainLayout = () => {
       case "/student-management":
         setSelectedKeys(["4"]);
         break;
-      case "/course-unit-management":
+      case "/teacher-management":
         setSelectedKeys(["5"]);
         break;
-      case "/import-score":
+      case "/course-unit-management":
         setSelectedKeys(["6"]);
+        break;
+      case "/import-score":
+        setSelectedKeys(["7"]);
         break;
       default:
         break;
@@ -53,8 +56,9 @@ export const MainLayout = () => {
     getItem(<div onClick={() => navigate("course-management")}>Quản lý khóa học</div>, '2', <PieChartOutlined />),
     getItem(<div onClick={() => navigate("subject-management")}>Quản lý môn học</div>, '3', <DesktopOutlined />),
     getItem(<div onClick={() => navigate("student-management")}>Quản lý học viên</div>, '4', <UserOutlined />),
-    getItem(<div onClick={() => navigate("course-unit-management")}>Quản lý học phần</div>, '5', <TeamOutlined />),
-    getItem(<div onClick={() => navigate("import-score")}>Nhập điểm</div>, '6', <FileOutlined />),
+    getItem(<div onClick={() => navigate("teacher-management")}>Quản lý giáo viên</div>, '5', <UserOutlined />),
+    getItem(<div onClick={() => navigate("course-unit-management")}>Quản lý lớp học phần</div>, '6', <TeamOutlined />),
+    getItem(<div onClick={() => navigate("import-score")}>Nhập điểm</div>, '7', <FileOutlined />),
   ];
   return (
     <Layout
@@ -103,7 +107,7 @@ export const MainLayout = () => {
             textAlign: 'center',
           }}
         >
-          Ant Design ©{new Date().getFullYear()} Created by Ant UED
+          Phần mềm quản lý điểm {new Date().getFullYear()}
         </Footer>
       </Layout>
     </Layout>

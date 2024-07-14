@@ -1,13 +1,15 @@
 import {Button, Col, Form, Input, Modal, Popconfirm, Popover, Row, Select, Table} from "antd";
 import {useEffect, useRef, useState} from "react";
-import {DeleteOutlined, EditOutlined, PlusOutlined, EyeOutlined} from "@ant-design/icons";
+import {DeleteOutlined, EditOutlined, EyeOutlined, PlusOutlined} from "@ant-design/icons";
 import TextArea from "antd/es/input/TextArea.js";
 import {Print} from "../Print/index.jsx";
+import {useReactToPrint} from "react-to-print";
 
 export const TableManagement = () => {
   const [form] = Form.useForm();
   const [valueNote, setValueNote] = useState("");
   const componentPrintRef = useRef();
+  const componentPrintCourseRef = useRef();
   const initData = [
     {
       id: 1,
@@ -35,6 +37,8 @@ export const TableManagement = () => {
       subject: "Toán",
       course: "Học kỳ I A7 K51",
       process: "50%",
+      number: 2,
+      score: 9,
       note: "Học ok",
     },
     {
@@ -42,6 +46,8 @@ export const TableManagement = () => {
       subject: "Lý",
       course: "Học kỳ II A7 K51",
       process: "70%",
+      number: 3,
+      score: 8,
       note: "Học k ok",
     },
   ];
@@ -54,7 +60,9 @@ export const TableManagement = () => {
   const [dataDetail, setDataDetail] = useState(null);
   const [processData, setProcessData] = useState(initDataProcess);
   const [subjects, setSubjects] = useState([]);
+  const [subjectsSelected, setSubjectsSelected] = useState([]);
   const [courses, setCourses] = useState([]);
+  const [courseSelected, setCourseSelected] = useState([]);
 
   const deleteStudent = (student) => {
     // call api delete and re-fetch api list
@@ -68,10 +76,13 @@ export const TableManagement = () => {
     setIsOpenModalDetail(true);
     setDataDetail(row);
 
-    // call API Data Process of Student
+    // call API Data Process of Student (score)
     setSubjects(initDataProcess.map((item) => {
       return {
+        id: item.id,
         name: item.subject,
+        number: item.number,
+        score: item.score,
       }
     }))
 
@@ -232,6 +243,13 @@ export const TableManagement = () => {
     form.resetFields();
   };
 
+  const handlePrintBySubject = useReactToPrint({
+    content: () => componentPrintRef.current,
+  });
+
+  const handlePrintByCourse = useReactToPrint({
+    content: () => componentPrintCourseRef.current,
+  });
 
   return (
     <div className="mt-3">
@@ -363,10 +381,17 @@ export const TableManagement = () => {
           <div className="mt-3 mb-3">
             <Row gutter={24}>
               <Col span={12}>
-                <Select mode="multiple" allowClear placeholder="Chọn môn học" className="w-full">
+                <Select onChange={(e) => {
+                  const newSubjectFiltered = e.map((item) => {
+                    const filtered = subjects.filter((subject) => subject.id === item);
+                    return filtered[0]
+                  })
+                  setSubjectsSelected(newSubjectFiltered);
+                  console.log(e)
+                }} mode="multiple" allowClear placeholder="Chọn môn học" className="w-full">
                   {subjects.map((item) => {
                     return (
-                      <Select.Option value={item.name} key={item.name}>
+                      <Select.Option value={item.id} key={item.id}>
                         {item.name}
                       </Select.Option>
                     )
@@ -375,7 +400,7 @@ export const TableManagement = () => {
                 </Select>
               </Col>
               <Col>
-                <Button type="primary">In bảng điểm</Button>
+                <Button type="primary" onClick={() => handlePrintBySubject()}>In bảng điểm</Button>
               </Col>
             </Row>
           </div>
@@ -384,7 +409,9 @@ export const TableManagement = () => {
           <div className="mt-3">
             <Row gutter={24}>
               <Col span={12}>
-                <Select placeholder="Chọn khoá học" className="w-full">
+                <Select onSelect={(e) => {
+                  setCourseSelected(e);
+                }} placeholder="Chọn khoá học" className="w-full">
                   {courses.map((item) => {
                     return (
                       <Select.Option value={item.name} key={item.name}>
@@ -396,11 +423,31 @@ export const TableManagement = () => {
                 </Select>
               </Col>
               <Col>
-                <Button type="primary">In bảng điểm</Button>
+                <Button type="primary" onClick={() => handlePrintByCourse()}>In bảng điểm</Button>
               </Col>
             </Row>
 
-            <Print ref={componentPrintRef} data={[]}/>
+            <Print ref={componentPrintRef} data={{
+              name: dataDetail ? dataDetail.fullName : "",
+              dateOfBirth: dataDetail ? dataDetail.dateOfBirth : "",
+              address: dataDetail ? dataDetail.address : "",
+              phone: dataDetail ? dataDetail.phone : "",
+              scores: subjectsSelected.map((item) => {
+                return {
+                  subject: item.name,
+                  number: item.number,
+                  score: item.score,
+                }
+              })
+            }}/>
+
+            <Print ref={componentPrintCourseRef} data={{
+              name: dataDetail ? dataDetail.fullName : "",
+              dateOfBirth: dataDetail ? dataDetail.dateOfBirth : "",
+              address: dataDetail ? dataDetail.address : "",
+              phone: dataDetail ? dataDetail.phone : "",
+              scores: initDataProcess.filter((item) => item.course === courseSelected)
+            }}/>
           </div>
         </Modal>
       )}

@@ -8,6 +8,7 @@ import {StudentManagement} from "./Pages/StudentManagement/index.jsx";
 import {CourseUnitManagement} from "./Pages/CourseUnitManagement/index.jsx";
 import {ImportScore} from "./Pages/ImportScore/index.jsx";
 import {CategoryManagement} from "./Pages/CategoryManagement/index.jsx";
+import {TeacherManagement} from "./Pages/TeacherManagement/index.jsx";
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
           <Route path="course-management" element={<CourseManagement />} />
           <Route path="subject-management" element={<SubjectManagement />} />
           <Route path="student-management" element={<StudentManagement />} />
+          <Route path="teacher-management" element={<TeacherManagement />} />
           <Route path="course-unit-management" element={<CourseUnitManagement />} />
           <Route path="import-score" element={<ImportScore />} />
           <Route path="*" element={<PageNotFound />} />
