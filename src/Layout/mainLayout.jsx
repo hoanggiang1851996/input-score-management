@@ -1,7 +1,15 @@
 import {Layout, Menu, theme} from "antd";
 import {useEffect, useState} from "react";
 import {Outlet, useLocation, useNavigate} from "react-router-dom";
-import {DesktopOutlined, FileOutlined, PieChartOutlined, TeamOutlined, UserOutlined, UnorderedListOutlined} from "@ant-design/icons";
+import {
+  DesktopOutlined,
+  FileOutlined,
+  PieChartOutlined,
+  TeamOutlined,
+  UserOutlined,
+  UnorderedListOutlined,
+  SearchOutlined
+} from "@ant-design/icons";
 const { Header, Content, Footer, Sider } = Layout;
 
 
@@ -31,8 +39,14 @@ export const MainLayout = () => {
       case "/course-unit-management":
         setSelectedKeys(["6"]);
         break;
-      case "/import-score":
+        case "/enroll-class-management":
         setSelectedKeys(["7"]);
+        break;
+      case "/import-score":
+        setSelectedKeys(["8"]);
+        break;
+      case "/lookup":
+        setSelectedKeys(["9"]);
         break;
       default:
         break;
@@ -58,7 +72,9 @@ export const MainLayout = () => {
     getItem(<div onClick={() => navigate("student-management")}>Quản lý học viên</div>, '4', <UserOutlined />),
     getItem(<div onClick={() => navigate("teacher-management")}>Quản lý giáo viên</div>, '5', <UserOutlined />),
     getItem(<div onClick={() => navigate("course-unit-management")}>Quản lý lớp học phần</div>, '6', <TeamOutlined />),
-    getItem(<div onClick={() => navigate("import-score")}>Nhập điểm</div>, '7', <FileOutlined />),
+    getItem(<div onClick={() => navigate("enroll-class-management")}>Quản lý đăng ký lớp</div>, '7', <TeamOutlined />),
+    getItem(<div onClick={() => navigate("import-score")}>Nhập điểm</div>, '8', <FileOutlined />),
+    getItem(<div onClick={() => navigate("lookup")}>Tra cứu</div>, '9', <SearchOutlined />),
   ];
   return (
     <Layout
