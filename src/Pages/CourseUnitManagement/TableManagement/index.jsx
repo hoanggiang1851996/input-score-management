@@ -1,7 +1,8 @@
-import {Button, DatePicker, Form, Input, Modal, Popconfirm, Select, Table} from "antd";
+import {Button, Checkbox, Col, DatePicker, Form, Input, message, Modal, Popconfirm, Row, Select, Table} from "antd";
 import {useEffect, useState} from "react";
 import {EditOutlined, DeleteOutlined, PlusOutlined} from "@ant-design/icons";
 import dayjs from 'dayjs';
+
 export const TableManagement = () => {
   const [form] = Form.useForm();
   const initData = [
@@ -61,6 +62,45 @@ export const TableManagement = () => {
       code: "VAN",
       name: "Văn",
     },
+  ];
+
+  const studentListInit = [
+    {
+      id: 1,
+      fullName: "Đinh Tuấn Khôi",
+      dateOfBirth: "11/11/1996",
+      address: "Kim Tràng, Việt Lập, Tân Yên, BG",
+      phone: "0123456789"
+    },
+    {
+      id: 2,
+      fullName: "Tạ Hoàng Giang",
+      dateOfBirth: "12/12/1996",
+      address: "Đồi đỏ, TTCT, Tân Yên, BG",
+      phone: "0123456789",
+    },
+    {
+      id: 3,
+      fullName: "Dương Ngọc Sơn",
+      dateOfBirth: "12/12/1996",
+      address: "Đồi đỏ, TTCT, Tân Yên, BG",
+      phone: "0123456789",
+    }
+  ]
+
+  const scheduleInit = [
+    {
+      id: 1,
+      startTime: "10:00 30/07/2024",
+      endTime: "12:00 30/07/2024",
+      studySession: "Sáng"
+    },
+    {
+      id: 2,
+      startTime: "14:00 30/07/2024",
+      endTime: "16:00 30/07/2024",
+      studySession: "Chiều"
+    }
   ]
 
   useEffect(() => {
@@ -78,6 +118,25 @@ export const TableManagement = () => {
   const [subjects, setSubjects] = useState(initSubjectData);
   const [isOpenModalCreate, setIsOpenModalCreate] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
+  const [isOpenModalViewStudentDetail, setIsOpenModalViewStudentDetail] = useState(false);
+  const [isOpenModalViewScheduleDetail, setIsOpenModalViewScheduleDetail] = useState(false);
+  const [studentChecked, setStudentChecked] = useState([]);
+  const [scheduleChecked, setScheduleChecked] = useState([]);
+  const [studentList, setStudentList] = useState(studentListInit);
+  const [schedule, setSchedule] = useState(scheduleInit);
+
+  const viewDetailStudentList = (row) => {
+    // call API detail student by row.id
+
+    setIsOpenModalViewStudentDetail(true);
+  };
+
+  const viewSchedule = (row) => {
+    // call API detail student by row.id
+
+    setIsOpenModalViewScheduleDetail(true);
+  };
+
   const columns = [
     {
       title: "STT",
@@ -115,24 +174,31 @@ export const TableManagement = () => {
       dataIndex: 'teacherName'
     },
     {
-      title: "Buổi học",
+      title: "Lịch trình học",
       key: "studySession",
-      dataIndex: 'studySession'
-    },
-    {
-      title: "Thời gian học từ",
-      key: "startTime",
-      dataIndex: 'startTime'
-    },
-    {
-      title: "Thời gian học đến",
-      key: "endTime",
-      dataIndex: 'endTime'
+      dataIndex: 'studySession',
+      render: (data, row) => {
+        return (
+          <div className="italic underline text-blue-950 cursor-pointer" onClick={() => viewSchedule(row)}>Xem lịch
+            trình học</div>
+        )
+      }
     },
     {
       title: "Địa điểm",
       key: "location",
       dataIndex: 'location'
+    },
+    {
+      title: "Danh sách học viên",
+      key: "studentList",
+      dataIndex: 'studentList',
+      render: (data, row) => {
+        return (
+          <div className="italic underline text-blue-950 cursor-pointer" onClick={() => viewDetailStudentList(row)}>Xem
+            danh sách học viên</div>
+        )
+      }
     },
     {
       title: "Nội dung",
@@ -175,6 +241,109 @@ export const TableManagement = () => {
       }
     }
   ];
+
+  const studentColumns = [
+    {
+      title: <Checkbox checked={studentChecked.length === studentList.length} onChange={(e) => {
+        if (e.target.checked) {
+          setStudentChecked(studentList.map((item) => item.id));
+          return;
+        }
+
+        setStudentChecked([]);
+      }}/>,
+      key: "checkbox",
+      dataIndex: 'checkbox',
+      render: (data, row) => {
+        return (
+          <div>
+            <Checkbox onChange={(e) => {
+              if (e.target.checked) {
+                setStudentChecked([...studentChecked, row.id]);
+                return;
+              }
+
+              setStudentChecked(studentChecked.filter((item) => item.id === row.id));
+            }} checked={studentChecked.indexOf(row.id) !== -1}/>
+          </div>
+        )
+      }
+    },
+    {
+      title: "STT",
+      key: "id",
+      dataIndex: 'id'
+    },
+    {
+      title: "Họ và tên",
+      key: "fullName",
+      dataIndex: 'fullName'
+    },
+    {
+      title: "Ngày sinh",
+      key: "dateOfBirth",
+      dataIndex: 'dateOfBirth'
+    },
+    {
+      title: "Địa chỉ",
+      key: "address",
+      dataIndex: 'address'
+    },
+    {
+      title: "Số điện thoại",
+      key: "phone",
+      dataIndex: 'phone'
+    },
+  ]
+
+  const scheduleColumns = [
+    {
+      title: <Checkbox checked={scheduleChecked.length === schedule.length} onChange={(e) => {
+        if (e.target.checked) {
+          setScheduleChecked(schedule.map((item) => item.id));
+          return;
+        }
+
+        setScheduleChecked([]);
+      }}/>,
+      key: "checkbox",
+      dataIndex: 'checkbox',
+      render: (data, row) => {
+        return (
+          <div>
+            <Checkbox onChange={(e) => {
+              if (e.target.checked) {
+                setScheduleChecked([...scheduleChecked, row.id]);
+                return;
+              }
+
+              setScheduleChecked(scheduleChecked.filter((item) => item.id === row.id));
+            }} checked={scheduleChecked.indexOf(row.id) !== -1}/>
+          </div>
+        )
+      }
+    },
+    {
+      title: "STT",
+      key: "id",
+      dataIndex: 'id'
+    },
+    {
+      title: "Thời gian từ",
+      key: "startTime",
+      dataIndex: 'startTime'
+    },
+    {
+      title: "Thời gian đến",
+      key: "endTime",
+      dataIndex: 'endTime'
+    },
+    {
+      title: "Buổi học",
+      key: "studySession",
+      dataIndex: 'studySession'
+    },
+  ]
 
   useEffect(() => {
     // call api teachers, subjects
@@ -295,59 +464,6 @@ export const TableManagement = () => {
             </Form.Item>
 
             <Form.Item
-              label="Buổi học"
-              name="studySession"
-              rules={[
-                {
-                  required: true,
-                  message: 'Vui lòng chọn buổi học.',
-                },
-              ]}
-            >
-              <Select placeholder="Chọn">
-                {[{
-                  value: 1,
-                  name: "Buổi sáng"
-                }, {
-                  value: 2,
-                  name: "Buổi chiều"
-                }].map((item) => {
-                  return (
-                    <Select.Option key={item.value} value={item.value}>
-                      {item.name}
-                    </Select.Option>
-                  )
-                })}
-              </Select>
-            </Form.Item>
-
-            <Form.Item
-              label="Thời gian học từ"
-              name="startTime"
-              rules={[
-                {
-                  required: true,
-                  message: 'Vui lòng chọn Thời gian học từ.',
-                },
-              ]}
-            >
-              <DatePicker format="HH:mm DD/MM/YYYY" className="w-full" showTime placeholder="Thời gian học từ"/>
-            </Form.Item>
-
-            <Form.Item
-              label="Thời gian học đến"
-              name="endTime"
-              rules={[
-                {
-                  required: true,
-                  message: 'Vui lòng chọn Thời gian học đến.',
-                },
-              ]}
-            >
-              <DatePicker format="HH:mm DD/MM/YYYY" className="w-full" showTime placeholder="Thời gian học đến"/>
-            </Form.Item>
-
-            <Form.Item
               label="Địa điểm"
               name="location"
               rules={[
@@ -389,6 +505,78 @@ export const TableManagement = () => {
               </Button>
             </div>
           </Form>
+        </Modal>
+      )}
+
+      {isOpenModalViewStudentDetail && (
+        <Modal width={800} title={"Danh sách học viên"} open={isOpenModalViewStudentDetail} footer={[]}
+               onCancel={() => setIsOpenModalViewStudentDetail(false)}>
+          <Row gutter={24}>
+            <Col span={12}>
+              <Select mode="tags" maxTagCount={2} className="w-full" placeholder="Chọn học viên">
+                {studentList.map((item) => {
+                  return (
+                    <Select.Option key={item.id} value={item.id}>
+                      {item.fullName}
+                    </Select.Option>
+                  )
+                })}
+              </Select>
+            </Col>
+            <Col span={12}>
+              <Button type="primary" className="mr-3">Thêm học viên vào danh sách</Button>
+              <Button type="primary" danger onClick={() => {
+                if (studentChecked.length === 0) {
+                  message.warning("Vui lòng chọn học viên để xóa khỏi lớp học phần.");
+                }
+
+                // call API delete
+              }}>Xóa</Button>
+            </Col>
+          </Row>
+          <Table className="mt-3" columns={studentColumns} dataSource={studentList}/>
+        </Modal>
+      )}
+
+      {isOpenModalViewScheduleDetail && (
+        <Modal width={1000} title={"Lịch trình lớp học phần"} open={isOpenModalViewScheduleDetail} footer={[]}
+               onCancel={() => setIsOpenModalViewScheduleDetail(false)}>
+          <Row gutter={24}>
+            <Col span={6}>
+              <DatePicker format="HH:mm DD/MM/YYYY" className="w-full" showTime placeholder="Thời gian học từ"/>
+            </Col>
+            <Col span={6}>
+              <DatePicker format="HH:mm DD/MM/YYYY" className="w-full" showTime placeholder="Thời gian học đến"/>
+            </Col>
+            <Col span={6}>
+              <Select className="w-full" placeholder="Chọn buổi học">
+                {[{
+                  value: 1,
+                  name: "Buổi sáng"
+                }, {
+                  value: 2,
+                  name: "Buổi chiều"
+                }].map((item) => {
+                  return (
+                    <Select.Option key={item.value} value={item.value}>
+                      {item.name}
+                    </Select.Option>
+                  )
+                })}
+              </Select>
+            </Col>
+            <Col span={6}>
+              <Button type="primary" className="mr-3">Thêm lịch trình</Button>
+              <Button type="primary" danger onClick={() => {
+                if (scheduleChecked.length === 0) {
+                  message.warning("Vui lòng chọn lịch trình để xóa.");
+                }
+
+                // call API delete
+              }}>Xóa</Button>
+            </Col>
+          </Row>
+          <Table className="mt-3" columns={scheduleColumns} dataSource={schedule}/>
         </Modal>
       )}
     </div>
