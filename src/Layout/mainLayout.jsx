@@ -8,7 +8,7 @@ import {
   TeamOutlined,
   UserOutlined,
   UnorderedListOutlined,
-  SearchOutlined
+  SettingOutlined
 } from "@ant-design/icons";
 const { Header, Content, Footer, Sider } = Layout;
 
@@ -42,6 +42,9 @@ export const MainLayout = () => {
       case "/import-score":
         setSelectedKeys(["7"]);
         break;
+      case "/user-management":
+        setSelectedKeys(["8"]);
+        break;
       default:
         break;
     }
@@ -67,6 +70,7 @@ export const MainLayout = () => {
     getItem(<div onClick={() => navigate("teacher-management")}>Quản lý giáo viên</div>, '5', <UserOutlined />),
     getItem(<div onClick={() => navigate("course-unit-management")}>Quản lý lớp học phần</div>, '6', <TeamOutlined />),
     getItem(<div onClick={() => navigate("import-score")}>Nhập điểm</div>, '7', <FileOutlined />),
+    getItem(<div onClick={() => navigate("user-management")}>Quản lý người dùng</div>, '8', <UserOutlined />),
   ];
   return (
     <Layout
